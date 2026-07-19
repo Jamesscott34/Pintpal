@@ -1,7 +1,7 @@
 /**
  * ServingRushActivity.kt
  *
- * Purpose: Android Serving Rush — pick correct tap, save tilt angle, tap to pour.
+ * Purpose: Serving Rush — pick pint name, then pour; heats get harder; scoreboard opt-in.
  */
 package com.jdscott.pintpal.features.serving_game.ui
 
@@ -14,8 +14,10 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.jdscott.pintpal.R
@@ -42,6 +44,7 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
     private var tiltingPour = false
     private var liveTilt = 0f
     private var savedTilt: Float? = null
+    private var timer: CountDownTimer? = null
 
     private lateinit var sensorManager: SensorManager
     private var gravitySensor: Sensor? = null
@@ -57,8 +60,9 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
     private lateinit var saveTiltButton: Button
     private lateinit var clearTiltButton: Button
     private lateinit var tapPourButton: Button
+    private lateinit var optIn: CheckBox
 
-    private enum class Phase { IDLE, PICK_TAP, POURING, FINISHED }
+    private enum class Phase { IDLE, PICK_PINT, POURING, FINISHED }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,14 +85,7 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
         saveTiltButton = findViewById(R.id.serving_save_tilt)
         clearTiltButton = findViewById(R.id.serving_clear_tilt)
         tapPourButton = findViewById(R.id.serving_tap_pour)
-
-        ServingDrinks.ALL.forEach { drink ->
-            val btn = Button(this).apply {
-                text = drink.label
-                setOnClickListener { onTap(drink.id) }
-            }
-            taps.addView(btn)
-        }
+        optIn = findViewById(R.id.serving_opt_in)
 
         glass.isClickable = false
         glass.isFocusable = false
@@ -98,6 +95,31 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
         saveTiltButton.setOnClickListener { saveTilt() }
         clearTiltButton.setOnClickListener { clearTilt() }
         tapPourButton.setOnClickListener { togglePour() }
+
+        lifecycleScope.launch {
+            optIn.isChecked = scoreRepo.isScoreboardOptIn()
+        }
+        optIn.setOnCheckedChangeListener { _, checked ->
+            lifecycleScope.launch {
+                scoreRepo.setScoreboardOptIn(checked)
+                    .onSuccess {
+                        status.text = if (checked) {
+                            "Your best will appear on the public Serving Rush scoreboard."
+                        } else {
+                            "Hidden from the public Serving Rush scoreboard."
+                        }
+                    }
+                    .onFailure { err ->
+                        optIn.isChecked = !checked
+                        Toast.makeText(
+                            this@ServingRushActivity,
+                            err.message ?: "Could not update opt-in",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    }
+            }
+        }
+
         renderIdle()
     }
 
@@ -142,40 +164,57 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
 
     override fun onPourStateChanged(state: PourState) = Unit
 
-    private var timer: CountDownTimer? = null
-
     private fun startRun() {
         timer?.cancel()
         missLocked = false
         score = 0
         misses = 0
         completed = 0
-        orderIndex = 0
-        currentDrink = ServingDrinks.randomId()
-        phase = Phase.PICK_TAP
+        startButton.visibility = View.GONE
+        beginOrder(0)
+    }
+
+    private fun beginOrder(index: Int, exclude: String? = null) {
+        missLocked = false
+        tiltingPour = false
         savedTilt = null
         liveTilt = 0f
-        startButton.visibility = View.GONE
+        orderIndex = index
+        currentDrink = ServingDrinks.randomId(exclude)
+        phase = Phase.PICK_PINT
+
         glass.visibility = View.GONE
         tiltControls.visibility = View.GONE
         taps.visibility = View.VISIBLE
         orderLabel.visibility = View.VISIBLE
-        status.text = getString(R.string.serving_pick_tap)
-        refreshStats(ServingDrinks.ORDER_SECONDS)
-        showOrder()
-        startOrderTimer()
-    }
-
-    private fun showOrder() {
         orderLabel.text = getString(
             R.string.serving_order_fmt,
             ServingDrinks.byId(currentDrink).label,
         )
+        status.text = getString(R.string.serving_pick_tap)
+        rebuildChoiceButtons()
+        startOrderTimer()
+        refreshStats()
+    }
+
+    private fun rebuildChoiceButtons() {
+        taps.removeAllViews()
+        val choices = ServingDrinks.choicesForOrder(currentDrink, orderIndex)
+        for (id in choices) {
+            val drink = ServingDrinks.byId(id)
+            taps.addView(
+                Button(this).apply {
+                    text = drink.label
+                    setOnClickListener { onPickPint(id) }
+                },
+            )
+        }
     }
 
     private fun startOrderTimer() {
         timer?.cancel()
-        timer = object : CountDownTimer(ServingDrinks.ORDER_SECONDS * 1000L, 1000L) {
+        val seconds = ServingDrinks.heatForOrder(orderIndex).seconds
+        timer = object : CountDownTimer(seconds * 1000L, 1000L) {
             override fun onTick(millisUntilFinished: Long) {
                 refreshStats((millisUntilFinished / 1000L).toInt())
             }
@@ -184,10 +223,11 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
                 registerMiss(getString(R.string.serving_timeout))
             }
         }.start()
+        refreshStats(seconds)
     }
 
-    private fun onTap(id: String) {
-        if (phase != Phase.PICK_TAP) return
+    private fun onPickPint(id: String) {
+        if (phase != Phase.PICK_PINT) return
         if (id != currentDrink) {
             registerMiss(getString(R.string.serving_wrong_tap))
             return
@@ -199,10 +239,14 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
         taps.visibility = View.GONE
         glass.visibility = View.VISIBLE
         tiltControls.visibility = View.VISIBLE
-        glass.config = ServingDrinks.byId(id).pourConfig
+        glass.config = ServingDrinks.pourConfigForHeat(id, orderIndex)
         glass.resetGlass()
         glass.inputLocked = true
         tapPourButton.text = getString(R.string.serving_tap_pour)
+        orderLabel.text = getString(
+            R.string.serving_pouring_fmt,
+            ServingDrinks.byId(id).label,
+        )
         status.text = getString(R.string.serving_pour_now)
         refreshTiltMeter()
     }
@@ -238,8 +282,7 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
             status.text = getString(R.string.serving_tilt_need_save)
             return
         }
-        val drink = ServingDrinks.byId(currentDrink)
-        val base = drink.pourConfig
+        val base = ServingDrinks.pourConfigForHeat(currentDrink, orderIndex)
         glass.config = base.copy(pourSpeed = base.pourSpeed * (0.45f + tilt * 1.35f))
         glass.inputLocked = false
         glass.startPour()
@@ -283,22 +326,12 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
     }
 
     private fun advance() {
-        orderIndex += 1
-        if (orderIndex >= ServingDrinks.ORDERS_PER_RUN) {
+        val next = orderIndex + 1
+        if (next >= ServingDrinks.ORDERS_PER_RUN) {
             finishRun()
             return
         }
-        missLocked = false
-        savedTilt = null
-        liveTilt = 0f
-        currentDrink = ServingDrinks.randomId(exclude = currentDrink)
-        phase = Phase.PICK_TAP
-        glass.visibility = View.GONE
-        tiltControls.visibility = View.GONE
-        taps.visibility = View.VISIBLE
-        showOrder()
-        status.text = getString(R.string.serving_pick_tap)
-        startOrderTimer()
+        beginOrder(next, exclude = currentDrink)
     }
 
     private fun finishRun() {
@@ -340,14 +373,20 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
         refreshStats(0)
     }
 
-    private fun refreshStats(secondsLeft: Int) {
+    private fun refreshStats(secondsLeft: Int? = null) {
+        val heat = ServingDrinks.heatForOrder(orderIndex)
+        val heatLine = if (secondsLeft != null && (phase == Phase.PICK_PINT || phase == Phase.POURING)) {
+            getString(R.string.serving_heat_fmt, heat.label, secondsLeft)
+        } else {
+            heat.label
+        }
         stats.text = getString(
             R.string.serving_stats_fmt,
             score,
             (orderIndex + 1).coerceAtMost(ServingDrinks.ORDERS_PER_RUN),
             ServingDrinks.ORDERS_PER_RUN,
             misses,
-            secondsLeft,
+            heatLine,
         )
     }
 }

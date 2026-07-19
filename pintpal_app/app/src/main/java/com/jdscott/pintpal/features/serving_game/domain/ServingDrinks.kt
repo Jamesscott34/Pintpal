@@ -1,7 +1,7 @@
 /**
  * ServingDrinks.kt
  *
- * Purpose: Serving Rush drink/tap catalogue for Android.
+ * Purpose: Serving Rush drink catalogue + progressive heat difficulty.
  */
 package com.jdscott.pintpal.features.serving_game.domain
 
@@ -13,8 +13,15 @@ data class ServingDrink(
     val pourConfig: PourConfig,
 )
 
+data class ServingHeat(
+    val label: String,
+    val seconds: Int,
+    val choiceCount: Int,
+    val pourSpeedMul: Float,
+    val toleranceMul: Float,
+)
+
 object ServingDrinks {
-    const val ORDER_SECONDS = 14
     const val ORDERS_PER_RUN = 8
     const val MISS_PENALTY = 10
 
@@ -75,5 +82,30 @@ object ServingDrinks {
     fun randomId(exclude: String? = null): String {
         val pool = ALL.map { it.id }.filter { it != exclude }
         return pool.random()
+    }
+
+    fun heatForOrder(orderIndex: Int): ServingHeat = when {
+        orderIndex <= 1 -> ServingHeat("Easy", 22, 2, 0.72f, 1.55f)
+        orderIndex <= 3 -> ServingHeat("Warming up", 16, 3, 0.95f, 1.2f)
+        orderIndex <= 5 -> ServingHeat("Busy", 12, 4, 1.15f, 1f)
+        else -> ServingHeat("Rush hour", 9, 4, 1.4f, 0.72f)
+    }
+
+    /** Pint names for this order — always includes the correct drink. */
+    fun choicesForOrder(correctId: String, orderIndex: Int): List<String> {
+        val count = heatForOrder(orderIndex).choiceCount.coerceAtMost(ALL.size)
+        val others = ALL.map { it.id }.filter { it != correctId }.shuffled().take(count - 1)
+        return (listOf(correctId) + others).shuffled()
+    }
+
+    fun pourConfigForHeat(drinkId: String, orderIndex: Int): PourConfig {
+        val drink = byId(drinkId)
+        val heat = heatForOrder(orderIndex)
+        val base = drink.pourConfig
+        return base.copy(
+            pourSpeed = base.pourSpeed * heat.pourSpeedMul,
+            liquidTolerance = base.liquidTolerance * heat.toleranceMul,
+            headTolerance = base.headTolerance * heat.toleranceMul,
+        )
     }
 }

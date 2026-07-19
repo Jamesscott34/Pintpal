@@ -1,25 +1,27 @@
 /**
  * ServingRushScreen.tsx
  *
- * Purpose: Serving Rush — pick the correct tap, then pour accurately before the order timer.
- * Connects to: games_common PourGlass; servingGameScoreRepository.
- * Notes: Wrong tap or timeout = miss (score reduced). Never rewards drinking volume/speed.
+ * Purpose: Serving Rush — pick the ordered pint name, then pour; difficulty ramps up.
+ * Connects to: TiltPourGlass; servingGameScoreRepository; progressive heats.
  */
 
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TiltPourGlass } from "@/features/games_common/components";
 import type { PourScore } from "@/features/games_common/types";
 import {
-  SERVING_DRINKS,
   SERVING_MISS_PENALTY,
-  SERVING_ORDER_SECONDS,
   SERVING_ORDERS_PER_RUN,
   drinkById,
   randomDrinkId,
   type ServingDrinkId,
 } from "../drinks";
+import {
+  choicesForOrder,
+  heatForOrder,
+  pourConfigForHeat,
+} from "../difficulty";
 import {
   setServingScoreboardOptIn,
   submitServingScore,
@@ -28,22 +30,30 @@ import { loadUserDocument } from "@/features/auth/data/authRepository";
 import { getFirebaseAuth } from "@/utilities/firebase";
 import styles from "./ServingRushScreen.module.css";
 
-type Phase = "idle" | "pick_tap" | "pouring" | "finished";
+type Phase = "idle" | "pick_pint" | "pouring" | "finished";
 
 export function ServingRushScreen() {
   const [phase, setPhase] = useState<Phase>("idle");
   const [orderIndex, setOrderIndex] = useState(0);
   const [currentDrink, setCurrentDrink] = useState<ServingDrinkId>("guinness");
-  const [secondsLeft, setSecondsLeft] = useState(SERVING_ORDER_SECONDS);
+  const [choices, setChoices] = useState<ServingDrinkId[]>([]);
+  const [secondsLeft, setSecondsLeft] = useState(22);
   const [score, setScore] = useState(0);
   const [misses, setMisses] = useState(0);
   const [completed, setCompleted] = useState(0);
   const [status, setStatus] = useState(
-    "Start a rush — pick the right tap, save a tilt, then tap to pour.",
+    "Start a rush — orders begin easy and get harder.",
   );
   const [optIn, setOptIn] = useState(false);
   const [pourKey, setPourKey] = useState(0);
   const missLock = useRef(false);
+
+  const heat = useMemo(() => heatForOrder(orderIndex), [orderIndex]);
+  const drink = drinkById(currentDrink);
+  const pourConfig = useMemo(
+    () => pourConfigForHeat(drink, orderIndex),
+    [drink, orderIndex],
+  );
 
   useEffect(() => {
     const uid = getFirebaseAuth().currentUser?.uid;
@@ -51,6 +61,19 @@ export function ServingRushScreen() {
     void loadUserDocument(uid).then((doc) => {
       if (doc?.servingGameScoreboardOptIn) setOptIn(true);
     });
+  }, []);
+
+  const beginOrder = useCallback((index: number, exclude?: ServingDrinkId) => {
+    const id = randomDrinkId(exclude);
+    missLock.current = false;
+    setOrderIndex(index);
+    setCurrentDrink(id);
+    setChoices(choicesForOrder(id, index));
+    setSecondsLeft(heatForOrder(index).seconds);
+    setPhase("pick_pint");
+    setStatus(
+      `Order ${index + 1}: select the pint that matches the ticket (${heatForOrder(index).label}).`,
+    );
   }, []);
 
   const finishRun = useCallback(
@@ -67,7 +90,7 @@ export function ServingRushScreen() {
           setStatus(
             result.publicBoardUpdated
               ? "Personal best saved and shown on the Serving Rush scoreboard."
-              : "Personal best saved to your profile.",
+              : "Personal best saved to your profile. Tick the scoreboard box to show it publicly.",
           );
         } else {
           setStatus("Run saved. Score did not beat your personal best.");
@@ -87,19 +110,15 @@ export function ServingRushScreen() {
       nextCompleted: number,
       nextMisses: number,
       nextOrder: number,
+      exclude?: ServingDrinkId,
     ) => {
       if (nextOrder >= SERVING_ORDERS_PER_RUN) {
         void finishRun(nextScore, nextCompleted, nextMisses);
         return;
       }
-      missLock.current = false;
-      setOrderIndex(nextOrder);
-      setCurrentDrink(randomDrinkId());
-      setSecondsLeft(SERVING_ORDER_SECONDS);
-      setPhase("pick_tap");
-      setStatus("New order — select the correct tap.");
+      beginOrder(nextOrder, exclude);
     },
-    [finishRun],
+    [beginOrder, finishRun],
   );
 
   const registerMiss = useCallback(
@@ -111,13 +130,27 @@ export function ServingRushScreen() {
       setMisses(nextMisses);
       setScore(nextScore);
       setStatus(`${reason} (−${SERVING_MISS_PENALTY})`);
-      advanceOrFinish(nextScore, completed, nextMisses, orderIndex + 1);
+      advanceOrFinish(
+        nextScore,
+        completed,
+        nextMisses,
+        orderIndex + 1,
+        currentDrink,
+      );
     },
-    [advanceOrFinish, completed, misses, orderIndex, phase, score],
+    [
+      advanceOrFinish,
+      completed,
+      currentDrink,
+      misses,
+      orderIndex,
+      phase,
+      score,
+    ],
   );
 
   useEffect(() => {
-    if (phase !== "pick_tap" && phase !== "pouring") return;
+    if (phase !== "pick_pint" && phase !== "pouring") return;
     if (secondsLeft <= 0) {
       registerMiss("Order timed out");
       return;
@@ -127,27 +160,24 @@ export function ServingRushScreen() {
   }, [phase, secondsLeft, registerMiss]);
 
   function startRun() {
-    missLock.current = false;
     setScore(0);
     setMisses(0);
     setCompleted(0);
-    setOrderIndex(0);
-    setCurrentDrink(randomDrinkId());
-    setSecondsLeft(SERVING_ORDER_SECONDS);
     setPourKey((k) => k + 1);
-    setPhase("pick_tap");
-    setStatus("Select the tap that matches the order.");
+    beginOrder(0);
   }
 
-  function onTap(id: ServingDrinkId) {
-    if (phase !== "pick_tap") return;
+  function onPickPint(id: ServingDrinkId) {
+    if (phase !== "pick_pint") return;
     if (id !== currentDrink) {
-      registerMiss("Wrong tap");
+      registerMiss("Wrong pint");
       return;
     }
     setPhase("pouring");
     setPourKey((k) => k + 1);
-    setStatus("Correct tap — tilt to an angle, Save tilt, then Tap to pour. Stop & score near the band.");
+    setStatus(
+      `Pour the ${drink.label} — tilt, Save tilt, Tap to pour, then Stop & score.`,
+    );
   }
 
   function onPourScore(pourScore: PourScore) {
@@ -159,28 +189,37 @@ export function ServingRushScreen() {
     setScore(nextScore);
     setCompleted(nextCompleted);
     setStatus(`${pourScore.feedbackLabel} (+${gained})`);
-    advanceOrFinish(nextScore, nextCompleted, misses, orderIndex + 1);
+    advanceOrFinish(
+      nextScore,
+      nextCompleted,
+      misses,
+      orderIndex + 1,
+      currentDrink,
+    );
   }
 
   async function onToggleOptIn(checked: boolean) {
     setOptIn(checked);
     try {
       await setServingScoreboardOptIn(checked);
+      setStatus(
+        checked
+          ? "Your best Serving Rush score will appear on the public scoreboard."
+          : "Hidden from the public Serving Rush scoreboard.",
+      );
     } catch (err) {
       setStatus(err instanceof Error ? err.message : "Could not update opt-in.");
     }
   }
-
-  const drink = drinkById(currentDrink);
 
   return (
     <div className={styles.screen}>
       <p className={styles.brand}>PintPal</p>
       <h1 className={styles.title}>Serving Rush</h1>
       <p className={styles.lead}>
-      Match the order to the right tap, then tilt to an angle, save it, and tap to
-      pour before time runs out. Misses reduce your score. Bartender skill only —
-      not drinking.
+        Read the order, pick the matching pint name, then pour that glass. Starts
+        easy (fewer choices, more time) and gets harder. Bartender skill only —
+        not drinking.
       </p>
 
       <div className={styles.stats}>
@@ -190,37 +229,43 @@ export function ServingRushScreen() {
           {SERVING_ORDERS_PER_RUN}
         </span>
         <span>Misses {misses}</span>
-        {(phase === "pick_tap" || phase === "pouring") && (
-          <span className={styles.timer}>{secondsLeft}s</span>
+        {(phase === "pick_pint" || phase === "pouring") && (
+          <>
+            <span className={styles.heat}>{heat.label}</span>
+            <span className={styles.timer}>{secondsLeft}s</span>
+          </>
         )}
       </div>
 
-      {phase !== "idle" && phase !== "finished" ? (
-        <p className={styles.order}>
-          Order: <strong>{drink.label}</strong>
-        </p>
+      {phase === "pick_pint" ? (
+        <>
+          <p className={styles.order}>
+            Ticket: <strong>{drink.label}</strong>
+          </p>
+          <p className={styles.prompt}>Select the matching pint</p>
+          <div className={styles.taps} role="group" aria-label="Pint names">
+            {choices.map((id) => (
+              <button
+                key={id}
+                type="button"
+                className={styles.tap}
+                onClick={() => onPickPint(id)}
+              >
+                {drinkById(id).label}
+              </button>
+            ))}
+          </div>
+        </>
       ) : null}
 
-      {(phase === "pick_tap" || phase === "pouring") && (
-        <div className={styles.taps} role="group" aria-label="Drink taps">
-          {SERVING_DRINKS.map((d) => (
-            <button
-              key={d.id}
-              type="button"
-              className={styles.tap}
-              disabled={phase !== "pick_tap"}
-              onClick={() => onTap(d.id)}
-            >
-              {d.label}
-            </button>
-          ))}
-        </div>
-      )}
-
       {phase === "pouring" ? (
-        <div className={styles.pourWrap} key={pourKey}>
+        <div className={styles.pourWrap}>
+          <p className={styles.order}>
+            Pouring: <strong>{drink.label}</strong>
+          </p>
           <TiltPourGlass
-            config={drink.pourConfig}
+            key={pourKey}
+            config={pourConfig}
             onScore={onPourScore}
             resetKey={pourKey}
           />

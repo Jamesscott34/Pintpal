@@ -64,4 +64,28 @@ class ServingGameScoreRepository(
         }
         ServingSubmitResult(personalBestUpdated, publicBoardUpdated)
     }
+
+    suspend fun setScoreboardOptIn(optIn: Boolean): Result<Unit> = runCatching {
+        val user = auth.currentUser ?: error("Not signed in")
+        val userRef = firestore.collection(FirebaseConstants.Collections.USERS).document(user.uid)
+        userRef.set(
+            mapOf(FirebaseConstants.UserFields.SERVING_GAME_SCOREBOARD_OPT_IN to optIn),
+            SetOptions.merge(),
+        ).await()
+        if (!optIn) {
+            firestore.collection(FirebaseConstants.Collections.SERVING_GAME_SCORES)
+                .document("${user.uid}_best")
+                .delete()
+                .await()
+        }
+    }
+
+    suspend fun isScoreboardOptIn(): Boolean {
+        val user = auth.currentUser ?: return false
+        val snap = firestore.collection(FirebaseConstants.Collections.USERS)
+            .document(user.uid)
+            .get()
+            .await()
+        return snap.getBoolean(FirebaseConstants.UserFields.SERVING_GAME_SCOREBOARD_OPT_IN) == true
+    }
 }

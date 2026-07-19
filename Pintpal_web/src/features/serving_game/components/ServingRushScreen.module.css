@@ -48,10 +48,21 @@
   font-weight: 700;
 }
 
+.heat {
+  color: #9ec4a8;
+  font-weight: 600;
+}
+
 .order {
   margin: 0;
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   color: #f2efe6;
+}
+
+.prompt {
+  margin: 0;
+  color: #b7c4ba;
+  font-size: 0.95rem;
 }
 
 .taps {
