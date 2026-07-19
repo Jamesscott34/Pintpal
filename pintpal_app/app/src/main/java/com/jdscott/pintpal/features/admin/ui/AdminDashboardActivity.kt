@@ -69,7 +69,7 @@ class AdminDashboardActivity : AppCompatActivity() {
                     usersList.removeAllViews()
                     users.forEach { user ->
                         val plan =
-                            if (user.canViewAdmin || user.subscriptionPaid || user.role.equals("admin", true)) {
+                            if (user.canViewAdmin || user.subscriptionPaid || user.displayRole.equals("admin", true)) {
                                 "paid"
                             } else {
                                 "free"
@@ -80,7 +80,13 @@ class AdminDashboardActivity : AppCompatActivity() {
                                 append(" · ")
                                 append(user.email.ifBlank { "—" })
                                 append('\n')
-                                append(user.role)
+                                append("Role: ")
+                                append(user.displayRole)
+                                if (user.role != user.displayRole) {
+                                    append(" (profile field: ")
+                                    append(user.role)
+                                    append(')')
+                                }
                                 append(" · login ")
                                 append(if (user.canLogin) "yes" else "no")
                                 append(" · ")

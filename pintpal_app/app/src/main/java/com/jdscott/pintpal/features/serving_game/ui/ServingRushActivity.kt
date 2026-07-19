@@ -1,10 +1,15 @@
 /**
  * ServingRushActivity.kt
  *
- * Purpose: Android Serving Rush — pick correct tap, then pour with PourGlassView.
+ * Purpose: Android Serving Rush — pick correct tap, then tilt phone to pour.
  */
 package com.jdscott.pintpal.features.serving_game.ui
 
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
@@ -20,10 +25,11 @@ import com.jdscott.pintpal.features.games_common.ui.PourGlassView
 import com.jdscott.pintpal.features.serving_game.data.ServingGameScoreRepository
 import com.jdscott.pintpal.features.serving_game.domain.ServingDrinks
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener {
+class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorEventListener {
 
     private val scoreRepo = ServingGameScoreRepository()
     private var phase = Phase.IDLE
@@ -34,6 +40,10 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener {
     private var completed = 0
     private var missLocked = false
     private var timer: CountDownTimer? = null
+    private var tiltingPour = false
+
+    private lateinit var sensorManager: SensorManager
+    private var gravitySensor: Sensor? = null
 
     private lateinit var status: TextView
     private lateinit var stats: TextView
@@ -50,6 +60,10 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = getString(R.string.serving_game_title)
 
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY)
+            ?: sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+
         status = findViewById(R.id.serving_status)
         stats = findViewById(R.id.serving_stats)
         orderLabel = findViewById(R.id.serving_order)
@@ -65,9 +79,25 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener {
             taps.addView(btn)
         }
 
+        // Tilt drives pour; disable press-and-hold on the glass.
+        glass.isClickable = false
+        glass.isFocusable = false
+        glass.inputLocked = true
         glass.listener = this
         startButton.setOnClickListener { startRun() }
         renderIdle()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        gravitySensor?.let {
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME)
+        }
+    }
+
+    override fun onPause() {
+        sensorManager.unregisterListener(this)
+        super.onPause()
     }
 
     override fun onDestroy() {
@@ -80,7 +110,30 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener {
         return true
     }
 
+    override fun onSensorChanged(event: SensorEvent?) {
+        if (phase != Phase.POURING || event == null) return
+        // Gravity Y near 9.8 = upright; tipping increases |X| or reduces Y.
+        val x = event.values.getOrNull(0) ?: return
+        val y = event.values.getOrNull(1) ?: return
+        val tilt = max(abs(x) / 7f, (9.0f - abs(y)) / 7f).coerceIn(0f, 1f)
+        val shouldPour = tilt >= 0.28f
+        if (shouldPour && !tiltingPour) {
+            glass.inputLocked = false
+            glass.startPour()
+            tiltingPour = true
+            status.text = getString(R.string.serving_tilting)
+        } else if (!shouldPour && tiltingPour) {
+            glass.stopPour()
+            tiltingPour = false
+            glass.inputLocked = true
+        }
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) = Unit
+
     override fun onPourScored(score: PourScore) {
+        tiltingPour = false
+        glass.inputLocked = true
         onPourScore(score)
     }
 
@@ -132,10 +185,12 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener {
             return
         }
         phase = Phase.POURING
+        tiltingPour = false
         taps.visibility = View.GONE
         glass.visibility = View.VISIBLE
         glass.config = ServingDrinks.byId(id).pourConfig
         glass.resetGlass()
+        glass.inputLocked = true
         status.text = getString(R.string.serving_pour_now)
     }
 
@@ -154,6 +209,10 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener {
         if (missLocked || phase == Phase.IDLE || phase == Phase.FINISHED) return
         missLocked = true
         timer?.cancel()
+        if (tiltingPour) {
+            glass.stopPour()
+            tiltingPour = false
+        }
         misses += 1
         score = max(0, score - ServingDrinks.MISS_PENALTY)
         status.text = "$reason (−${ServingDrinks.MISS_PENALTY})"

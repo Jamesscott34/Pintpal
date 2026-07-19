@@ -29,7 +29,15 @@ export function PublicHub() {
             <Link className={styles.item} href="/games/pour">
               <span className={styles.itemTitle}>Pour the Perfect Pint</span>
               <span className={styles.itemMeta}>
-                Practice, timed runs, and scoreboard
+                Practice, timed heats, and scoreboard
+              </span>
+            </Link>
+          </li>
+          <li>
+            <Link className={styles.item} href="/games/tilt">
+              <span className={styles.itemTitle}>Tilt the Pint</span>
+              <span className={styles.itemMeta}>
+                Drag or tip the glass to fill — shared with Serving Rush
               </span>
             </Link>
           </li>
@@ -37,7 +45,7 @@ export function PublicHub() {
             <Link className={styles.item} href="/games/serving">
               <span className={styles.itemTitle}>Serving Rush</span>
               <span className={styles.itemMeta}>
-                Correct tap, accurate pour, beat the order clock
+                Correct tap, then tilt-pour before the clock
               </span>
             </Link>
           </li>

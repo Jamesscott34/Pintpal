@@ -27,7 +27,6 @@ import com.jdscott.pintpal.features.pour_game.data.PourGameScoreRepository
 import com.jdscott.pintpal.features.pour_game.domain.PourPhase
 import com.jdscott.pintpal.features.pour_game.domain.PourScoreMode
 import com.jdscott.pintpal.features.pour_game.domain.PourScoreSubmission
-import com.jdscott.pintpal.features.pour_game.domain.PracticeLevels
 import com.jdscott.pintpal.features.pour_game.domain.TimedPourScoring
 import com.jdscott.pintpal.features.pour_game.domain.TimedRunSummary
 import com.jdscott.pintpal.features.pour_game.domain.TwoPartPourController
@@ -73,7 +72,7 @@ class PourTimedActivity : AppCompatActivity(), TwoPartPourController.Listener {
         pourGlass.isFocusable = false
 
         controller = TwoPartPourController(
-            difficulty = PracticeLevels.LEVEL_1,
+            difficulty = TimedPourScoring.difficultyForHeat(1),
             listener = this,
         )
 
@@ -102,7 +101,7 @@ class PourTimedActivity : AppCompatActivity(), TwoPartPourController.Listener {
     }
 
     override fun onPhaseChanged(phase: PourPhase) {
-        hintText.text = controller.phaseHint()
+        hintText.text = sectionHint()
         updatePourButton()
         if (running && phase == PourPhase.COMPLETE) {
             pourButton.postDelayed({
@@ -120,6 +119,7 @@ class PourTimedActivity : AppCompatActivity(), TwoPartPourController.Listener {
     override fun onRoundComplete(score: PourScore) {
         if (!running) return
         summary = TimedPourScoring.record(summary, score)
+        controller.setDifficulty(TimedPourScoring.difficultyForHeat(summary.nextHeat))
         refreshHud()
     }
 
@@ -139,10 +139,11 @@ class PourTimedActivity : AppCompatActivity(), TwoPartPourController.Listener {
         finishedText.visibility = View.GONE
         newRunButton.visibility = View.GONE
         pourButton.visibility = View.VISIBLE
+        controller.setDifficulty(TimedPourScoring.difficultyForHeat(1))
         controller.unlockInput()
         controller.reset()
         refreshHud()
-        hintText.text = controller.phaseHint()
+        hintText.text = sectionHint()
         updatePourButton()
 
         timer?.cancel()
@@ -217,8 +218,19 @@ class PourTimedActivity : AppCompatActivity(), TwoPartPourController.Listener {
     }
 
     private fun refreshHud() {
+        val heat = TimedPourScoring.difficultyForHeat(summary.nextHeat)
         hudText.text =
-            "Pours: ${summary.completedPours} · Accuracy sum: ${summary.accuracySum} · Best: ${summary.bestSingleAccuracy}%"
+            "Pours: ${summary.completedPours} · Sum: ${summary.accuracySum} · Best: ${summary.bestSingleAccuracy}% · ${heat.label}"
+    }
+
+    private fun sectionHint(): String {
+        val section = when (controller.phase) {
+            PourPhase.FIRST_POUR -> "Section 1 · First pour"
+            PourPhase.SETTLE -> "Section 2 · Settle"
+            PourPhase.TOP_UP -> "Section 3 · Top-up"
+            PourPhase.COMPLETE -> "Round complete — heat rises next"
+        }
+        return "$section\n${controller.phaseHint()}"
     }
 
     private fun updatePourButton() {

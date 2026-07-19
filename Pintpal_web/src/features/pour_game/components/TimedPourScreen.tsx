@@ -1,29 +1,56 @@
 /**
  * TimedPourScreen.tsx
  *
- * Purpose: Timed mode — choose 30/60/90/120s, complete as many two-part pours as possible.
+ * Purpose: Timed mode — choose duration; each completed pour raises heat difficulty.
  * Connects to: useTwoPartPour, timedMode scoring; PourGameHub.
- * Notes: Primary score = sum of Perfect Pour Accuracies. Clock at 0 locks input instantly.
+ * Notes: Distinct sections: first pour → settle → top-up. Harder each completed pour.
  */
 
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { displayLevels } from "@/features/games_common/advancePour";
 import type { PourScore } from "@/features/games_common/types";
 import { useTwoPartPour } from "../hooks/useTwoPartPour";
-import { PRACTICE_LEVEL_1 } from "../practiceDifficulty";
 import {
   createEmptyTimedSummary,
   recordTimedPour,
+  timedDifficultyForHeat,
   TIMED_DURATIONS_SECONDS,
   type TimedDurationSeconds,
   type TimedRunSummary,
 } from "../timedMode";
 import { submitPourScore } from "../data/pourGameScoreRepository";
+import type { PourPhase } from "../types";
 import styles from "./TimedPourScreen.module.css";
 
 type RunStatus = "setup" | "running" | "finished";
+
+const PHASE_SECTION: Record<
+  PourPhase,
+  { step: number; title: string; detail: string }
+> = {
+  first_pour: {
+    step: 1,
+    title: "Section 1 · First pour",
+    detail: "Fill to about two-thirds, then release.",
+  },
+  settle: {
+    step: 2,
+    title: "Section 2 · Settle",
+    detail: "Head drops — wait for the top-up window.",
+  },
+  top_up: {
+    step: 3,
+    title: "Section 3 · Top-up",
+    detail: "Finish the pour into the ideal head band.",
+  },
+  complete: {
+    step: 3,
+    title: "Round complete",
+    detail: "Heat rises for the next pour.",
+  },
+};
 
 export function TimedPourScreen() {
   const [duration, setDuration] = useState<TimedDurationSeconds>(60);
@@ -38,6 +65,11 @@ export function TimedPourScreen() {
   const endAtRef = useRef<number | null>(null);
   const summaryRef = useRef(summary);
   summaryRef.current = summary;
+
+  const difficulty = useMemo(
+    () => timedDifficultyForHeat(summary.nextHeat),
+    [summary.nextHeat],
+  );
 
   const inputLocked = status !== "running";
 
@@ -56,20 +88,18 @@ export function TimedPourScreen() {
     stopPour,
     reset,
   } = useTwoPartPour({
-    difficulty: PRACTICE_LEVEL_1,
+    difficulty,
     inputLocked,
     onComplete,
   });
 
-  // After a completed pour during a run, auto-reset glass for the next pour.
   useEffect(() => {
     if (status === "running" && phase === "complete") {
-      const t = window.setTimeout(() => reset(), 600);
+      const t = window.setTimeout(() => reset(), 700);
       return () => window.clearTimeout(t);
     }
   }, [status, phase, reset]);
 
-  // Countdown — locks the instant remaining hits 0.
   useEffect(() => {
     if (status !== "running") return;
     const id = window.setInterval(() => {
@@ -126,6 +156,7 @@ export function TimedPourScreen() {
   const targetBottom = config.targetLiquidLevel * 100;
   const targetTop =
     (config.targetLiquidLevel + config.targetHeadSize) * 100;
+  const section = PHASE_SECTION[phase];
 
   return (
     <div className={styles.page}>
@@ -133,8 +164,8 @@ export function TimedPourScreen() {
         <p className={styles.brand}>PintPal</p>
         <h1>Timed pour</h1>
         <p className={styles.sub}>
-          Complete as many two-part pours as you can. Score is the sum of Perfect
-          Pour Accuracies — bartender skill, not drinking.
+          Each pour has three sections (first pour, settle, top-up). Every
+          completed pour raises the heat — faster pours and tighter targets.
         </p>
       </header>
 
@@ -170,6 +201,7 @@ export function TimedPourScreen() {
               {summary.accuracySum}
             </span>
             <span>Best single: {summary.bestSingleAccuracy}%</span>
+            <span className={styles.heat}>{difficulty.label}</span>
           </div>
 
           {status === "finished" ? (
@@ -187,7 +219,31 @@ export function TimedPourScreen() {
             </div>
           ) : (
             <>
-              <p className={styles.hint}>{phaseHint}</p>
+              <div className={styles.phaseRail} aria-label="Pour sections">
+                {([1, 2, 3] as const).map((step) => (
+                  <div
+                    key={step}
+                    className={
+                      section.step === step
+                        ? styles.phaseStepActive
+                        : section.step > step
+                          ? styles.phaseStepDone
+                          : styles.phaseStep
+                    }
+                  >
+                    {step === 1
+                      ? "First pour"
+                      : step === 2
+                        ? "Settle"
+                        : "Top-up"}
+                  </div>
+                ))}
+              </div>
+              <div className={styles.sectionCard}>
+                <p className={styles.sectionTitle}>{section.title}</p>
+                <p className={styles.sectionDetail}>{section.detail}</p>
+                <p className={styles.hint}>{phaseHint}</p>
+              </div>
               <div
                 className={styles.glass}
                 role="img"

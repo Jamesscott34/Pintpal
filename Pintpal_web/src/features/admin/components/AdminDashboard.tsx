@@ -129,10 +129,12 @@ export function AdminDashboard() {
                   <tr key={user.uid}>
                     <td>{user.name || "—"}</td>
                     <td>{user.email || "—"}</td>
-                    <td>{user.role}</td>
+                    <td>{user.displayRole}</td>
                     <td>{user.canLogin ? "yes" : "no"}</td>
                     <td>
-                      {user.canViewAdmin || user.subscriptionPaid || user.role === "admin"
+                      {user.canViewAdmin ||
+                      user.subscriptionPaid ||
+                      user.displayRole === "admin"
                         ? "paid"
                         : "free"}
                     </td>

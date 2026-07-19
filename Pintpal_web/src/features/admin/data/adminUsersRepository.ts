@@ -9,6 +9,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { getFirebaseFirestore } from "@/utilities/firebase";
 import { Collections } from "@/utilities/firebaseConstants";
 import type { UserDocument } from "@/features/auth/types";
+import { resolveCanViewAdmin, resolveDisplayRole } from "./resolveUserRole";
 
 export type AdminUserListItem = Pick<
   UserDocument,
@@ -19,19 +20,25 @@ export type AdminUserListItem = Pick<
   | "canLogin"
   | "canViewAdmin"
   | "subscriptionPaid"
->;
+> & {
+  /** Role shown in the admin table (admin if canViewAdmin even when role field is "user"). */
+  displayRole: string;
+};
 
 export async function listAllUsersForAdmin(): Promise<AdminUserListItem[]> {
   const snap = await getDocs(collection(getFirebaseFirestore(), Collections.users));
   const users = snap.docs.map((docSnap) => {
     const data = docSnap.data() as Record<string, unknown>;
+    const displayRole = resolveDisplayRole(data);
+    const canViewAdmin = resolveCanViewAdmin(data);
     return {
       uid: docSnap.id,
       email: typeof data.email === "string" ? data.email : "",
       name: typeof data.name === "string" ? data.name : "",
-      role: typeof data.role === "string" ? data.role : "user",
-      canLogin: data.canLogin === true,
-      canViewAdmin: data.canViewAdmin === true,
+      role: typeof data.role === "string" ? data.role : displayRole,
+      displayRole,
+      canLogin: data.canLogin === true || data.CanLogin === true,
+      canViewAdmin,
       subscriptionPaid: data.subscriptionPaid === true,
     };
   });

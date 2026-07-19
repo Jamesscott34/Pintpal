@@ -9,7 +9,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { PourGlass } from "@/features/games_common/components";
+import { TiltPourGlass } from "@/features/games_common/components";
 import type { PourScore } from "@/features/games_common/types";
 import {
   SERVING_DRINKS,
@@ -145,7 +145,7 @@ export function ServingRushScreen() {
     }
     setPhase("pouring");
     setPourKey((k) => k + 1);
-    setStatus("Correct tap — pour to the ideal band, then stop.");
+    setStatus("Correct tap — tilt the glass to pour, then level out to score.");
   }
 
   function onPourScore(pourScore: PourScore) {
@@ -176,8 +176,8 @@ export function ServingRushScreen() {
       <p className={styles.brand}>PintPal</p>
       <h1 className={styles.title}>Serving Rush</h1>
       <p className={styles.lead}>
-        Match the order to the right tap, then pour accurately before time runs
-        out. Misses reduce your score. Bartender skill only — not drinking.
+      Match the order to the right tap, then tilt the glass to pour before time
+      runs out. Misses reduce your score. Bartender skill only — not drinking.
       </p>
 
       <div className={styles.stats}>
@@ -216,10 +216,10 @@ export function ServingRushScreen() {
 
       {phase === "pouring" ? (
         <div className={styles.pourWrap} key={pourKey}>
-          <PourGlass
+          <TiltPourGlass
             config={drink.pourConfig}
             onScore={onPourScore}
-            showControls
+            resetKey={pourKey}
           />
         </div>
       ) : null}

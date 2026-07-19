@@ -1,0 +1,101 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 24rem;
+  margin: 0 auto;
+  touch-action: none;
+  user-select: none;
+}
+
+.skillNote {
+  margin: 0;
+  text-align: center;
+  color: #b7c4ba;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.permBtn {
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #3d5648;
+  background: #16241c;
+  color: #f2efe6;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.stage {
+  padding: 24px 32px;
+  transition: transform 0.08s linear;
+  cursor: grab;
+}
+
+.stage:active {
+  cursor: grabbing;
+}
+
+.glass {
+  position: relative;
+  width: min(170px, 46vw);
+  height: min(250px, 42vh);
+  border: 3px solid rgba(242, 239, 230, 0.55);
+  border-top: none;
+  border-radius: 0 0 18% 18% / 0 0 12% 12%;
+  background: rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+}
+
+.targetBand {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: rgba(196, 163, 90, 0.22);
+  border-top: 1px dashed rgba(196, 163, 90, 0.7);
+  border-bottom: 1px dashed rgba(196, 163, 90, 0.7);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.liquid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+}
+
+.head {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 3;
+}
+
+.rim {
+  position: absolute;
+  top: 0;
+  left: -4%;
+  right: -4%;
+  height: 6px;
+  background: rgba(242, 239, 230, 0.35);
+  z-index: 4;
+}
+
+.meter,
+.hint,
+.score {
+  margin: 0;
+  color: #b7c4ba;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.score {
+  color: #c4a35a;
+  font-weight: 600;
+}
