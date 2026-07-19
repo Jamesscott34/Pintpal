@@ -14,6 +14,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.jdscott.pintpal.R
 import com.jdscott.pintpal.features.app_shell.ui.PublicHubActivity
+import com.jdscott.pintpal.features.drinks.ui.DrinkRatingsActivity
 import com.jdscott.pintpal.features.pour_game.ui.PourGameHubActivity
 import com.jdscott.pintpal.features.ratings.ui.BestPintsActivity
 import com.jdscott.pintpal.features.serving_game.ui.ServingRushActivity
@@ -36,6 +37,9 @@ class ReflowFragment : Fragment() {
         }
         view.findViewById<Button>(R.id.public_tab_best_pints).setOnClickListener {
             startActivity(Intent(requireContext(), BestPintsActivity::class.java))
+        }
+        view.findViewById<Button>(R.id.public_tab_drinks).setOnClickListener {
+            startActivity(Intent(requireContext(), DrinkRatingsActivity::class.java))
         }
         view.findViewById<Button>(R.id.public_tab_hub).setOnClickListener {
             startActivity(Intent(requireContext(), PublicHubActivity::class.java))

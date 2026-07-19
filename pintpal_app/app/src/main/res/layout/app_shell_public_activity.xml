@@ -69,6 +69,13 @@
             android:layout_marginTop="8dp"
             android:text="@string/menu_best_pints" />
 
+        <Button
+            android:id="@+id/app_shell_open_drinks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/menu_beer_ratings" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

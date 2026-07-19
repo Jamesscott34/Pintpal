@@ -21,8 +21,8 @@ export function TiltPourScreen() {
       <p className={styles.brand}>PintPal</p>
       <h1 className={styles.title}>Tilt the Pint</h1>
       <p className={styles.lead}>
-        Tap and drag the glass (or tip your phone) to pour. Level out to stop and
-        lock in Perfect Pour Accuracy.
+        Tilt the glass to an angle, save it, then tap to pour. Stop near the
+        ideal band for Perfect Pour Accuracy.
       </p>
       <TiltPourGlass
         resetKey={resetKey}

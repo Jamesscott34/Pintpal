@@ -93,9 +93,11 @@ export function AdminDashboard() {
             </Link>
           </li>
           <li>
-            <Link className={styles.item} href="/ratings">
-              <span className={styles.itemTitle}>Best Pints</span>
-              <span className={styles.itemMeta}>Photo contest · daily & weekly winners</span>
+            <Link className={styles.item} href="/drinks">
+              <span className={styles.itemTitle}>Beer ratings</span>
+              <span className={styles.itemMeta}>
+                Mixes &amp; similar suggestions · 1–10 scores
+              </span>
             </Link>
           </li>
           <li>

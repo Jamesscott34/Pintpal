@@ -33,7 +33,8 @@ export function AppShell({ children, section }: AppShellProps) {
     section === "public" ||
     pathname?.startsWith("/public") ||
     pathname?.startsWith("/games") ||
-    pathname?.startsWith("/ratings");
+    pathname?.startsWith("/ratings") ||
+    pathname?.startsWith("/drinks");
   const activePrivate =
     section === "private" ||
     pathname?.startsWith("/private") ||

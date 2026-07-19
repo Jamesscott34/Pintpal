@@ -20,6 +20,27 @@ export const Collections = {
   contestWeeks: "contest_weeks",
   /** Daily winners cache (doc id = dayKey yyyy-MM-dd). */
   contestDays: "contest_days",
+  /** Community drink / beer mix entries (e.g. Heineken with lemon). */
+  drinkEntries: "drink_entries",
+} as const;
+
+export const DrinkEntryFields = {
+  userId: "userId",
+  displayName: "displayName",
+  title: "title",
+  baseBeer: "baseBeer",
+  mixins: "mixins",
+  tags: "tags",
+  notes: "notes",
+  createdAt: "createdAt",
+  ratingSum: "ratingSum",
+  ratingCount: "ratingCount",
+  averageRating: "averageRating",
+} as const;
+
+export const DrinkRatingFields = {
+  score: "score",
+  createdAt: "createdAt",
 } as const;
 
 export const PintPhotoFields = {

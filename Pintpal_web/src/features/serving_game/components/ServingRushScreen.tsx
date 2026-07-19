@@ -38,7 +38,9 @@ export function ServingRushScreen() {
   const [score, setScore] = useState(0);
   const [misses, setMisses] = useState(0);
   const [completed, setCompleted] = useState(0);
-  const [status, setStatus] = useState("Start a rush — pick the right tap, then pour.");
+  const [status, setStatus] = useState(
+    "Start a rush — pick the right tap, save a tilt, then tap to pour.",
+  );
   const [optIn, setOptIn] = useState(false);
   const [pourKey, setPourKey] = useState(0);
   const missLock = useRef(false);
@@ -145,7 +147,7 @@ export function ServingRushScreen() {
     }
     setPhase("pouring");
     setPourKey((k) => k + 1);
-    setStatus("Correct tap — tilt the glass to pour, then level out to score.");
+    setStatus("Correct tap — tilt to an angle, Save tilt, then Tap to pour. Stop & score near the band.");
   }
 
   function onPourScore(pourScore: PourScore) {
@@ -176,8 +178,9 @@ export function ServingRushScreen() {
       <p className={styles.brand}>PintPal</p>
       <h1 className={styles.title}>Serving Rush</h1>
       <p className={styles.lead}>
-      Match the order to the right tap, then tilt the glass to pour before time
-      runs out. Misses reduce your score. Bartender skill only — not drinking.
+      Match the order to the right tap, then tilt to an angle, save it, and tap to
+      pour before time runs out. Misses reduce your score. Bartender skill only —
+      not drinking.
       </p>
 
       <div className={styles.stats}>

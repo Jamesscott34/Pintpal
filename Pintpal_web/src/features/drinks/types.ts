@@ -1,9 +1,24 @@
 /**
- * types.ts
+ * types.ts — drink / beer mix ratings
  *
- * Purpose: Stage 0 type placeholder for the drinks feature (web).
- * Connects to: features/drinks components, hooks, and data modules.
- * Notes: Shared types for this feature only. Implementation in later Phase 1 stages.
+ * Purpose: Community drink entries (e.g. Heineken with lemon) and ratings.
  */
 
-export {};
+export type DrinkEntry = {
+  id: string;
+  userId: string;
+  displayName: string;
+  /** Full label, e.g. "Heineken with lemon". */
+  title: string;
+  /** Base beer/brand for similar suggestions, e.g. "Heineken". */
+  baseBeer: string;
+  /** Free-text mix-ins / notes, e.g. "lemon", "lime wedge". */
+  mixins: string;
+  /** Lowercase tags for similarity (base + mixin words). */
+  tags: string[];
+  notes: string;
+  createdAtMs: number;
+  ratingSum: number;
+  ratingCount: number;
+  averageRating: number;
+};

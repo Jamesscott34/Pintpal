@@ -1,13 +1,13 @@
 /**
  * TiltPourGlass.tsx
  *
- * Purpose: Glass that fills when tilted (device orientation or drag).
+ * Purpose: Set glass tilt, save the angle, then tap to pour at that speed.
  * Connects to: useDeviceTilt + usePourMechanic; tilt game + Serving Rush.
  */
 
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { displayLevels } from "../advancePour";
 import { useDeviceTilt } from "../hooks/useDeviceTilt";
 import { usePourMechanic } from "../hooks/usePourMechanic";
@@ -29,6 +29,14 @@ export function TiltPourGlass({
   resetKey = 0,
 }: TiltPourGlassProps) {
   const tilt = useDeviceTilt();
+  const [savedTilt, setSavedTilt] = useState<number | null>(null);
+  const displayTilt = savedTilt ?? tilt.tiltAmount;
+  const baseSpeed = config?.pourSpeed ?? 0.35;
+  const pourSpeed = useMemo(
+    () => baseSpeed * (0.45 + (savedTilt ?? 0) * 1.35),
+    [baseSpeed, savedTilt],
+  );
+
   const {
     state,
     config: resolved,
@@ -39,36 +47,19 @@ export function TiltPourGlass({
   } = usePourMechanic({
     config: {
       ...config,
-      pourSpeed:
-        (config?.pourSpeed ?? 0.35) * (0.45 + tilt.tiltAmount * 1.35),
+      pourSpeed,
     },
     inputLocked,
     onScore,
   });
-  const wasPouring = useRef(false);
 
   useEffect(() => {
     reset();
-  }, [resetKey, reset]);
-
-  // Tilt amount drives pour on/off and effective speed via start/stop.
-  useEffect(() => {
-    if (inputLocked) {
-      if (wasPouring.current) {
-        stopPour();
-        wasPouring.current = false;
-      }
-      return;
-    }
-    const shouldPour = tilt.tiltAmount >= 0.18;
-    if (shouldPour && !wasPouring.current) {
-      startPour();
-      wasPouring.current = true;
-    } else if (!shouldPour && wasPouring.current) {
-      stopPour();
-      wasPouring.current = false;
-    }
-  }, [tilt.tiltAmount, inputLocked, startPour, stopPour]);
+    setSavedTilt(null);
+    tilt.resetTilt();
+    // Only reset when the parent starts a new pour round.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- resetKey is the intentional trigger
+  }, [resetKey]);
 
   const display = displayLevels(state);
   const liquidColor = resolved.liquidColor ?? "#1a1208";
@@ -76,12 +67,16 @@ export function TiltPourGlass({
   const targetBottom = resolved.targetLiquidLevel * 100;
   const targetTop =
     (resolved.targetLiquidLevel + resolved.targetHeadSize) * 100;
+  const visualDegrees = -(displayTilt * 42);
+  const canSave = !inputLocked && !state.isPouring && tilt.tiltAmount >= 0.08;
+  const canPour =
+    !inputLocked && savedTilt != null && savedTilt >= 0.08 && !lastScore;
 
   return (
     <div className={styles.root}>
       <p className={styles.skillNote}>
-        Tilt the glass to pour — bartender skill, not drinking. On desktop, drag
-        on the glass; on phone, tip the device.
+        Tilt the glass to an angle, save it, then tap Pour. Bartender skill —
+        not drinking. On desktop, drag on the glass; on phone, tip the device.
       </p>
 
       {tilt.permission === "unknown" || tilt.permission === "denied" ? (
@@ -96,8 +91,8 @@ export function TiltPourGlass({
 
       <div
         className={styles.stage}
-        style={{ transform: `rotate(${tilt.tiltDegrees}deg)` }}
-        {...tilt.bindPointerTilt}
+        style={{ transform: `rotate(${visualDegrees}deg)` }}
+        {...(savedTilt == null && !state.isPouring ? tilt.bindPointerTilt : {})}
       >
         <div
           className={styles.glass}
@@ -131,7 +126,10 @@ export function TiltPourGlass({
       </div>
 
       <p className={styles.meter} aria-live="polite">
-        Tilt: {Math.round(tilt.tiltAmount * 100)}%
+        Live tilt: {Math.round(tilt.tiltAmount * 100)}%
+        {savedTilt != null
+          ? ` · Saved: ${Math.round(savedTilt * 100)}%`
+          : ""}
         {tilt.source === "orientation"
           ? " · motion"
           : tilt.source === "pointer"
@@ -140,11 +138,53 @@ export function TiltPourGlass({
         {state.isPouring ? " · pouring" : ""}
       </p>
 
+      <div className={styles.actions}>
+        <button
+          type="button"
+          className={styles.actionBtn}
+          disabled={!canSave}
+          onClick={() => setSavedTilt(tilt.tiltAmount)}
+        >
+          Save tilt
+        </button>
+        <button
+          type="button"
+          className={styles.actionBtn}
+          disabled={inputLocked || savedTilt == null || state.isPouring}
+          onClick={() => {
+            setSavedTilt(null);
+            tilt.resetTilt();
+          }}
+        >
+          Clear tilt
+        </button>
+        {!state.isPouring ? (
+          <button
+            type="button"
+            className={styles.actionBtnPrimary}
+            disabled={!canPour}
+            onClick={() => startPour()}
+          >
+            Tap to pour
+          </button>
+        ) : (
+          <button
+            type="button"
+            className={styles.actionBtnPrimary}
+            disabled={inputLocked}
+            onClick={() => stopPour()}
+          >
+            Stop &amp; score
+          </button>
+        )}
+      </div>
+
       {lastScore ? (
         <p className={styles.score}>{lastScore.feedbackLabel}</p>
       ) : (
         <p className={styles.hint}>
-          Tip until liquid rises, then level out to stop and score.
+          1) Tilt to an angle · 2) Save tilt · 3) Tap to pour · 4) Stop near the
+          ideal band
         </p>
       )}
     </div>

@@ -80,6 +80,20 @@ export function PublicHub() {
       </section>
 
       <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>Beer ratings</h2>
+        <ul className={styles.list}>
+          <li>
+            <Link className={styles.item} href="/drinks">
+              <span className={styles.itemTitle}>Rate beers &amp; mixes</span>
+              <span className={styles.itemMeta}>
+                e.g. Heineken with lemon · nicest so far · similar suggestions
+              </span>
+            </Link>
+          </li>
+        </ul>
+      </section>
+
+      <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Full scoreboards</h2>
         <ul className={styles.list}>
           <li>

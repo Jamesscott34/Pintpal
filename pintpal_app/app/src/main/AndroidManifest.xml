@@ -55,6 +55,12 @@
             android:theme="@style/Theme.Pintpal"
             android:parentActivityName=".MainActivity" />
         <activity
+            android:name=".features.drinks.ui.DrinkRatingsActivity"
+            android:exported="false"
+            android:label="@string/drinks_title"
+            android:theme="@style/Theme.Pintpal"
+            android:parentActivityName=".MainActivity" />
+        <activity
             android:name=".features.ratings.ui.BestPintsActivity"
             android:exported="false"
             android:label="@string/best_pints_title"

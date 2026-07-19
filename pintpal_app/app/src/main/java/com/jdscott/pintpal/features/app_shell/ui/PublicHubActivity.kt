@@ -47,7 +47,10 @@ class PublicHubActivity : AppCompatActivity() {
             startActivity(Intent(this, PourScoreboardActivity::class.java))
         }
         findViewById<Button>(R.id.app_shell_open_ratings).setOnClickListener {
-            startActivity(Intent(this, com.jdscott.pintpal.features.ratings.ui.BestPintsActivity::class.java))
+            startActivity(Intent(this, BestPintsActivity::class.java))
+        }
+        findViewById<Button>(R.id.app_shell_open_drinks).setOnClickListener {
+            startActivity(Intent(this, com.jdscott.pintpal.features.drinks.ui.DrinkRatingsActivity::class.java))
         }
         findViewById<Button>(R.id.app_shell_open_private).setOnClickListener {
             startActivity(Intent(this, PrivateProfileActivity::class.java))

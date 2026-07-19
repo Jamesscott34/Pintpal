@@ -1,7 +1,7 @@
 /**
  * ServingRushActivity.kt
  *
- * Purpose: Android Serving Rush — pick correct tap, then tilt phone to pour.
+ * Purpose: Android Serving Rush — pick correct tap, save tilt angle, tap to pour.
  */
 package com.jdscott.pintpal.features.serving_game.ui
 
@@ -39,8 +39,9 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
     private var misses = 0
     private var completed = 0
     private var missLocked = false
-    private var timer: CountDownTimer? = null
     private var tiltingPour = false
+    private var liveTilt = 0f
+    private var savedTilt: Float? = null
 
     private lateinit var sensorManager: SensorManager
     private var gravitySensor: Sensor? = null
@@ -51,6 +52,11 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
     private lateinit var taps: LinearLayout
     private lateinit var glass: PourGlassView
     private lateinit var startButton: Button
+    private lateinit var tiltControls: LinearLayout
+    private lateinit var tiltMeter: TextView
+    private lateinit var saveTiltButton: Button
+    private lateinit var clearTiltButton: Button
+    private lateinit var tapPourButton: Button
 
     private enum class Phase { IDLE, PICK_TAP, POURING, FINISHED }
 
@@ -70,6 +76,11 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
         taps = findViewById(R.id.serving_taps)
         glass = findViewById(R.id.serving_glass)
         startButton = findViewById(R.id.serving_start)
+        tiltControls = findViewById(R.id.serving_tilt_controls)
+        tiltMeter = findViewById(R.id.serving_tilt_meter)
+        saveTiltButton = findViewById(R.id.serving_save_tilt)
+        clearTiltButton = findViewById(R.id.serving_clear_tilt)
+        tapPourButton = findViewById(R.id.serving_tap_pour)
 
         ServingDrinks.ALL.forEach { drink ->
             val btn = Button(this).apply {
@@ -79,12 +90,14 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
             taps.addView(btn)
         }
 
-        // Tilt drives pour; disable press-and-hold on the glass.
         glass.isClickable = false
         glass.isFocusable = false
         glass.inputLocked = true
         glass.listener = this
         startButton.setOnClickListener { startRun() }
+        saveTiltButton.setOnClickListener { saveTilt() }
+        clearTiltButton.setOnClickListener { clearTilt() }
+        tapPourButton.setOnClickListener { togglePour() }
         renderIdle()
     }
 
@@ -111,22 +124,11 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (phase != Phase.POURING || event == null) return
-        // Gravity Y near 9.8 = upright; tipping increases |X| or reduces Y.
+        if (phase != Phase.POURING || event == null || tiltingPour) return
         val x = event.values.getOrNull(0) ?: return
         val y = event.values.getOrNull(1) ?: return
-        val tilt = max(abs(x) / 7f, (9.0f - abs(y)) / 7f).coerceIn(0f, 1f)
-        val shouldPour = tilt >= 0.28f
-        if (shouldPour && !tiltingPour) {
-            glass.inputLocked = false
-            glass.startPour()
-            tiltingPour = true
-            status.text = getString(R.string.serving_tilting)
-        } else if (!shouldPour && tiltingPour) {
-            glass.stopPour()
-            tiltingPour = false
-            glass.inputLocked = true
-        }
+        liveTilt = max(abs(x) / 7f, (9.0f - abs(y)) / 7f).coerceIn(0f, 1f)
+        refreshTiltMeter()
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) = Unit
@@ -134,10 +136,13 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
     override fun onPourScored(score: PourScore) {
         tiltingPour = false
         glass.inputLocked = true
+        tapPourButton.text = getString(R.string.serving_tap_pour)
         onPourScore(score)
     }
 
     override fun onPourStateChanged(state: PourState) = Unit
+
+    private var timer: CountDownTimer? = null
 
     private fun startRun() {
         timer?.cancel()
@@ -148,8 +153,11 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
         orderIndex = 0
         currentDrink = ServingDrinks.randomId()
         phase = Phase.PICK_TAP
+        savedTilt = null
+        liveTilt = 0f
         startButton.visibility = View.GONE
         glass.visibility = View.GONE
+        tiltControls.visibility = View.GONE
         taps.visibility = View.VISIBLE
         orderLabel.visibility = View.VISIBLE
         status.text = getString(R.string.serving_pick_tap)
@@ -186,12 +194,67 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
         }
         phase = Phase.POURING
         tiltingPour = false
+        savedTilt = null
+        liveTilt = 0f
         taps.visibility = View.GONE
         glass.visibility = View.VISIBLE
+        tiltControls.visibility = View.VISIBLE
         glass.config = ServingDrinks.byId(id).pourConfig
         glass.resetGlass()
         glass.inputLocked = true
+        tapPourButton.text = getString(R.string.serving_tap_pour)
         status.text = getString(R.string.serving_pour_now)
+        refreshTiltMeter()
+    }
+
+    private fun saveTilt() {
+        if (phase != Phase.POURING || tiltingPour) return
+        if (liveTilt < 0.18f) {
+            status.text = getString(R.string.serving_tilt_need_save)
+            return
+        }
+        savedTilt = liveTilt
+        refreshTiltMeter()
+        status.text = getString(R.string.serving_pour_now)
+    }
+
+    private fun clearTilt() {
+        if (tiltingPour) return
+        savedTilt = null
+        refreshTiltMeter()
+    }
+
+    private fun togglePour() {
+        if (phase != Phase.POURING || missLocked) return
+        if (tiltingPour) {
+            glass.stopPour()
+            tiltingPour = false
+            glass.inputLocked = true
+            tapPourButton.text = getString(R.string.serving_tap_pour)
+            return
+        }
+        val tilt = savedTilt
+        if (tilt == null || tilt < 0.18f) {
+            status.text = getString(R.string.serving_tilt_need_save)
+            return
+        }
+        val drink = ServingDrinks.byId(currentDrink)
+        val base = drink.pourConfig
+        glass.config = base.copy(pourSpeed = base.pourSpeed * (0.45f + tilt * 1.35f))
+        glass.inputLocked = false
+        glass.startPour()
+        tiltingPour = true
+        tapPourButton.text = getString(R.string.serving_stop_score)
+        status.text = getString(R.string.serving_tilting)
+    }
+
+    private fun refreshTiltMeter() {
+        val savedLabel = savedTilt?.let { "${(it * 100).roundToInt()}%" } ?: "—"
+        tiltMeter.text = getString(
+            R.string.serving_tilt_meter_fmt,
+            (liveTilt * 100).roundToInt(),
+            savedLabel,
+        )
     }
 
     private fun onPourScore(pourScore: PourScore) {
@@ -226,9 +289,12 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
             return
         }
         missLocked = false
+        savedTilt = null
+        liveTilt = 0f
         currentDrink = ServingDrinks.randomId(exclude = currentDrink)
         phase = Phase.PICK_TAP
         glass.visibility = View.GONE
+        tiltControls.visibility = View.GONE
         taps.visibility = View.VISIBLE
         showOrder()
         status.text = getString(R.string.serving_pick_tap)
@@ -240,6 +306,7 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
         timer?.cancel()
         taps.visibility = View.GONE
         glass.visibility = View.GONE
+        tiltControls.visibility = View.GONE
         orderLabel.visibility = View.GONE
         startButton.visibility = View.VISIBLE
         startButton.text = getString(R.string.serving_play_again)
@@ -265,6 +332,7 @@ class ServingRushActivity : AppCompatActivity(), PourGlassView.Listener, SensorE
         phase = Phase.IDLE
         taps.visibility = View.GONE
         glass.visibility = View.GONE
+        tiltControls.visibility = View.GONE
         orderLabel.visibility = View.GONE
         startButton.visibility = View.VISIBLE
         startButton.text = getString(R.string.serving_start)

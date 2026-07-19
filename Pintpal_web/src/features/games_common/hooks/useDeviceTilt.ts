@@ -4,6 +4,7 @@
  * Purpose: Map device orientation / pointer drag to a 0–1 pour intensity.
  * Connects to: TiltPourGlass (tilt game + Serving Rush).
  * Notes: Desktop uses drag-to-tilt; phones can use DeviceOrientation when permitted.
+ *        Pointer release keeps the last tilt so the player can Save tilt, then tap Pour.
  */
 
 "use client";
@@ -20,6 +21,8 @@ export type UseDeviceTiltResult = {
   source: TiltSource;
   permission: "unknown" | "granted" | "denied" | "unsupported";
   requestPermission: () => Promise<void>;
+  /** Clear live tilt back to upright (does not clear a parent’s saved lock). */
+  resetTilt: () => void;
   /** Attach to the glass for pointer drag fallback. */
   bindPointerTilt: {
     onPointerDown: (e: PointerEvent) => void;
@@ -36,7 +39,6 @@ function clamp01(n: number): number {
 /** Convert beta (front-back) into pour intensity when phone is tipped forward. */
 function orientationToTilt(beta: number | null, gamma: number | null): number {
   if (beta == null && gamma == null) return 0;
-  // Tip phone toward you / forward: beta around 25–75°.
   const b = Math.abs(beta ?? 0);
   const g = Math.abs(gamma ?? 0);
   const fromBeta = clamp01((b - 20) / 55);
@@ -52,12 +54,12 @@ export function useDeviceTilt(): UseDeviceTiltResult {
   >("unknown");
   const pointerActive = useRef(false);
   const startY = useRef(0);
-  const orientationActive = useRef(false);
+  /** When true, orientation updates are ignored until reset (pointer set the angle). */
+  const holdPointerTilt = useRef(false);
 
   const onOrientation = useCallback((event: DeviceOrientationEvent) => {
-    if (pointerActive.current) return;
+    if (pointerActive.current || holdPointerTilt.current) return;
     const amount = orientationToTilt(event.beta, event.gamma);
-    orientationActive.current = amount > 0.05;
     setTiltAmount(amount);
     setSource(amount > 0.02 ? "orientation" : "idle");
   }, []);
@@ -102,9 +104,17 @@ export function useDeviceTilt(): UseDeviceTiltResult {
     }
   }, [onOrientation]);
 
+  const resetTilt = useCallback(() => {
+    holdPointerTilt.current = false;
+    pointerActive.current = false;
+    setTiltAmount(0);
+    setSource("idle");
+  }, []);
+
   const bindPointerTilt = {
     onPointerDown: (e: PointerEvent) => {
       pointerActive.current = true;
+      holdPointerTilt.current = true;
       startY.current = e.clientY;
       e.currentTarget.setPointerCapture(e.pointerId);
     },
@@ -122,17 +132,10 @@ export function useDeviceTilt(): UseDeviceTiltResult {
       } catch {
         /* already released */
       }
-      if (!orientationActive.current) {
-        setTiltAmount(0);
-        setSource("idle");
-      }
+      // Keep last tilt so the player can Save tilt, then tap Pour.
     },
     onPointerCancel: (_e: PointerEvent) => {
       pointerActive.current = false;
-      if (!orientationActive.current) {
-        setTiltAmount(0);
-        setSource("idle");
-      }
     },
   };
 
@@ -142,6 +145,7 @@ export function useDeviceTilt(): UseDeviceTiltResult {
     source,
     permission,
     requestPermission,
+    resetTilt,
     bindPointerTilt,
   };
 }

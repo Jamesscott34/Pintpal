@@ -59,6 +59,42 @@
             android:contentDescription="@string/games_common_glass_cd"
             android:visibility="gone" />
 
+        <LinearLayout
+            android:id="@+id/serving_tilt_controls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/serving_tilt_meter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/games_common_accent" />
+
+            <Button
+                android:id="@+id/serving_save_tilt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/serving_save_tilt" />
+
+            <Button
+                android:id="@+id/serving_clear_tilt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/serving_clear_tilt" />
+
+            <Button
+                android:id="@+id/serving_tap_pour"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/serving_tap_pour" />
+        </LinearLayout>
+
         <TextView
             android:id="@+id/serving_status"
             android:layout_width="match_parent"

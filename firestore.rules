@@ -211,6 +211,56 @@ service cloud.firestore {
     }
 
     // ============================================================
+    // DRINK / BEER MIX RATINGS
+    // e.g. "Heineken with lemon" — rate 1–10; similar by base/tags.
+    // ============================================================
+
+    match /drink_entries/{drinkId} {
+      allow read: if signedIn();
+
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.title is string
+        && request.resource.data.baseBeer is string
+        && request.resource.data.ratingSum == 0
+        && request.resource.data.ratingCount == 0
+        && request.resource.data.averageRating == 0;
+
+      allow update: if signedIn() && (
+        isAdmin()
+        || (
+          resource.data.userId == request.auth.uid
+          && request.resource.data.userId == resource.data.userId
+        )
+        || (
+          request.resource.data.userId == resource.data.userId
+          && request.resource.data.title == resource.data.title
+          && request.resource.data.baseBeer == resource.data.baseBeer
+          && request.resource.data.ratingCount is number
+          && request.resource.data.ratingSum is number
+          && request.resource.data.averageRating is number
+          && (
+            request.resource.data.ratingCount == resource.data.ratingCount + 1
+            || request.resource.data.ratingCount == resource.data.ratingCount
+          )
+        )
+      );
+
+      allow delete: if signedIn()
+        && (resource.data.userId == request.auth.uid || isAdmin());
+
+      match /ratings/{raterUid} {
+        allow read: if signedIn();
+        allow create, update: if signedIn()
+          && request.auth.uid == raterUid
+          && request.resource.data.score is number
+          && request.resource.data.score >= 1
+          && request.resource.data.score <= 10;
+        allow delete: if signedIn() && request.auth.uid == raterUid;
+      }
+    }
+
+    // ============================================================
     // DEFAULT DENY
     // ============================================================
 

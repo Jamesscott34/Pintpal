@@ -99,3 +99,35 @@
   color: #c4a35a;
   font-weight: 600;
 }
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  width: 100%;
+}
+
+.actionBtn,
+.actionBtnPrimary {
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #3d5648;
+  background: #16241c;
+  color: #f2efe6;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.actionBtn:disabled,
+.actionBtnPrimary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.actionBtnPrimary {
+  border-color: #c4a35a;
+  background: #1f3328;
+  color: #f2efe6;
+}

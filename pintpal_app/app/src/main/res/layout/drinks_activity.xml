@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/games_common_bg"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/drinks_title"
+            android:textColor="@color/games_common_text"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/drinks_lead"
+            android:textColor="@color/games_common_muted" />
+
+        <EditText
+            android:id="@+id/drinks_title_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/drinks_title_hint"
+            android:inputType="textCapSentences"
+            android:textColor="@color/games_common_text"
+            android:textColorHint="@color/games_common_muted" />
+
+        <EditText
+            android:id="@+id/drinks_base_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="@string/drinks_base_hint"
+            android:inputType="textCapWords"
+            android:textColor="@color/games_common_text"
+            android:textColorHint="@color/games_common_muted" />
+
+        <EditText
+            android:id="@+id/drinks_mixins_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="@string/drinks_mixins_hint"
+            android:inputType="textCapSentences"
+            android:textColor="@color/games_common_text"
+            android:textColorHint="@color/games_common_muted" />
+
+        <EditText
+            android:id="@+id/drinks_notes_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="@string/drinks_notes_hint"
+            android:inputType="textCapSentences|textMultiLine"
+            android:minLines="2"
+            android:textColor="@color/games_common_text"
+            android:textColorHint="@color/games_common_muted" />
+
+        <Button
+            android:id="@+id/drinks_post"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/drinks_post" />
+
+        <TextView
+            android:id="@+id/drinks_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/games_common_accent" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/drinks_nicest"
+            android:textColor="@color/games_common_text"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/drinks_top_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/drinks_all"
+            android:textColor="@color/games_common_text"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/drinks_feed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical" />
+    </LinearLayout>
+</ScrollView>

@@ -23,6 +23,27 @@ object FirebaseConstants {
         const val CONTEST_WEEKS = "contest_weeks"
         /** Daily winners cache (doc id = dayKey yyyy-MM-dd). */
         const val CONTEST_DAYS = "contest_days"
+        /** Community drink / beer mix entries. */
+        const val DRINK_ENTRIES = "drink_entries"
+    }
+
+    object DrinkEntryFields {
+        const val USER_ID = "userId"
+        const val DISPLAY_NAME = "displayName"
+        const val TITLE = "title"
+        const val BASE_BEER = "baseBeer"
+        const val MIXINS = "mixins"
+        const val TAGS = "tags"
+        const val NOTES = "notes"
+        const val CREATED_AT = "createdAt"
+        const val RATING_SUM = "ratingSum"
+        const val RATING_COUNT = "ratingCount"
+        const val AVERAGE_RATING = "averageRating"
+    }
+
+    object DrinkRatingFields {
+        const val SCORE = "score"
+        const val CREATED_AT = "createdAt"
     }
 
     object PintPhotoFields {
