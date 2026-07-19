@@ -1,42 +1,40 @@
+/**
+ * SlideshowFragment.kt
+ *
+ * Purpose: Scoreboard tab (renamed from Slideshow) — game boards + Best Pints so far.
+ */
 package com.jdscott.pintpal.ui.slideshow
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.Button
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.jdscott.pintpal.databinding.FragmentSlideshowBinding
+import com.jdscott.pintpal.R
+import com.jdscott.pintpal.features.pour_game.ui.PourScoreboardActivity
+import com.jdscott.pintpal.features.ratings.ui.BestPintsActivity
+import com.jdscott.pintpal.features.serving_game.ui.ServingRushActivity
 
 class SlideshowFragment : Fragment() {
-
-    private var _binding: FragmentSlideshowBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val slideshowViewModel =
-            ViewModelProvider(this).get(SlideshowViewModel::class.java)
+        savedInstanceState: Bundle?,
+    ): View = inflater.inflate(R.layout.fragment_slideshow, container, false)
 
-        _binding = FragmentSlideshowBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        val textView: TextView = binding.textSlideshow
-        slideshowViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.findViewById<Button>(R.id.scoreboard_tab_pour).setOnClickListener {
+            startActivity(Intent(requireContext(), PourScoreboardActivity::class.java))
         }
-        return root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        view.findViewById<Button>(R.id.scoreboard_tab_serving).setOnClickListener {
+            startActivity(Intent(requireContext(), ServingRushActivity::class.java))
+        }
+        view.findViewById<Button>(R.id.scoreboard_tab_best_pints).setOnClickListener {
+            startActivity(Intent(requireContext(), BestPintsActivity::class.java))
+        }
     }
 }

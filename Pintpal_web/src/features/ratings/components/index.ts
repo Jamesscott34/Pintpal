@@ -1,8 +1,5 @@
 /**
- * index.ts
- *
- * Purpose: Ratings feature UI exports.
- * Connects to: /ratings route.
+ * components/index.ts — ratings / Best Pints UI exports.
  */
 
-export { RatingsComingSoon } from "./RatingsComingSoon";
+export { BestPintsScreen } from "./BestPintsScreen";

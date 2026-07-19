@@ -14,6 +14,50 @@ export const Collections = {
   pourGameScores: "pour_game_scores",
   /** Serving Rush scores only — never mixed with pour or ratings boards. */
   servingGameScores: "serving_game_scores",
+  /** Community pint photo contest entries. */
+  pintPhotos: "pint_photos",
+  /** Weekly contest finalists + winner (doc id = weekKey). */
+  contestWeeks: "contest_weeks",
+  /** Daily winners cache (doc id = dayKey yyyy-MM-dd). */
+  contestDays: "contest_days",
+} as const;
+
+export const PintPhotoFields = {
+  userId: "userId",
+  displayName: "displayName",
+  imageUrl: "imageUrl",
+  storagePath: "storagePath",
+  createdAt: "createdAt",
+  dayKey: "dayKey",
+  weekKey: "weekKey",
+  ratingSum: "ratingSum",
+  ratingCount: "ratingCount",
+  averageRating: "averageRating",
+} as const;
+
+export const PintPhotoRatingFields = {
+  score: "score",
+  createdAt: "createdAt",
+} as const;
+
+export const ContestWeekFields = {
+  status: "status",
+  finalistIds: "finalistIds",
+  winnerId: "winnerId",
+  updatedAt: "updatedAt",
+} as const;
+
+export const ContestVoteFields = {
+  photoId: "photoId",
+  createdAt: "createdAt",
+} as const;
+
+export const ContestDayFields = {
+  winnerId: "winnerId",
+  averageRating: "averageRating",
+  displayName: "displayName",
+  imageUrl: "imageUrl",
+  updatedAt: "updatedAt",
 } as const;
 
 export const UserFields = {

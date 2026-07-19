@@ -9,7 +9,6 @@ package com.jdscott.pintpal.features.app_shell.ui
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.jdscott.pintpal.R
@@ -17,6 +16,7 @@ import com.jdscott.pintpal.features.auth.data.AuthRepository
 import com.jdscott.pintpal.features.auth.ui.AuthLoginActivity
 import com.jdscott.pintpal.features.pour_game.ui.PourGameHubActivity
 import com.jdscott.pintpal.features.pour_game.ui.PourScoreboardActivity
+import com.jdscott.pintpal.features.ratings.ui.BestPintsActivity
 import kotlinx.coroutines.launch
 
 class PublicHubActivity : AppCompatActivity() {
@@ -47,7 +47,7 @@ class PublicHubActivity : AppCompatActivity() {
             startActivity(Intent(this, PourScoreboardActivity::class.java))
         }
         findViewById<Button>(R.id.app_shell_open_ratings).setOnClickListener {
-            Toast.makeText(this, R.string.app_shell_ratings_coming_soon, Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, com.jdscott.pintpal.features.ratings.ui.BestPintsActivity::class.java))
         }
         findViewById<Button>(R.id.app_shell_open_private).setOnClickListener {
             startActivity(Intent(this, PrivateProfileActivity::class.java))

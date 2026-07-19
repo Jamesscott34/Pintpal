@@ -130,6 +130,87 @@ service cloud.firestore {
     }
 
     // ============================================================
+    // BEST PINTS PHOTO CONTEST
+    // Upload photos, rate 1–10, daily leaders, weekly top-3 vote.
+    // ============================================================
+
+    match /pint_photos/{photoId} {
+      allow read: if signedIn();
+
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.imageUrl is string
+        && request.resource.data.storagePath is string
+        && request.resource.data.dayKey is string
+        && request.resource.data.weekKey is string
+        && request.resource.data.ratingSum == 0
+        && request.resource.data.ratingCount == 0
+        && request.resource.data.averageRating == 0;
+
+      // Owner may delete own photo. Rating aggregates updated with a score write.
+      allow update: if signedIn() && (
+        isAdmin()
+        || (
+          resource.data.userId == request.auth.uid
+          && request.resource.data.userId == resource.data.userId
+          && request.resource.data.imageUrl == resource.data.imageUrl
+          && request.resource.data.storagePath == resource.data.storagePath
+        )
+        || (
+          request.resource.data.userId == resource.data.userId
+          && request.resource.data.imageUrl == resource.data.imageUrl
+          && request.resource.data.storagePath == resource.data.storagePath
+          && request.resource.data.dayKey == resource.data.dayKey
+          && request.resource.data.weekKey == resource.data.weekKey
+          && request.resource.data.ratingCount is number
+          && request.resource.data.ratingSum is number
+          && request.resource.data.averageRating is number
+          && (
+            request.resource.data.ratingCount == resource.data.ratingCount + 1
+            || request.resource.data.ratingCount == resource.data.ratingCount
+          )
+        )
+      );
+
+      allow delete: if signedIn()
+        && (resource.data.userId == request.auth.uid || isAdmin());
+
+      match /ratings/{raterUid} {
+        allow read: if signedIn();
+        allow create, update: if signedIn()
+          && request.auth.uid == raterUid
+          && request.resource.data.score is number
+          && request.resource.data.score >= 1
+          && request.resource.data.score <= 10;
+        allow delete: if signedIn() && request.auth.uid == raterUid;
+      }
+    }
+
+    match /contest_weeks/{weekKey} {
+      allow read: if signedIn();
+      allow create, update: if signedIn()
+        && request.resource.data.finalistIds is list
+        && request.resource.data.finalistIds.size() <= 3
+        && request.resource.data.status in ['open', 'finalists', 'voting', 'closed'];
+      allow delete: if isAdmin();
+
+      match /votes/{voterUid} {
+        allow read: if signedIn();
+        allow create, update: if signedIn()
+          && request.auth.uid == voterUid
+          && request.resource.data.photoId is string;
+        allow delete: if signedIn() && request.auth.uid == voterUid;
+      }
+    }
+
+    match /contest_days/{dayKey} {
+      allow read: if signedIn();
+      allow create, update: if signedIn()
+        && request.resource.data.winnerId is string;
+      allow delete: if isAdmin();
+    }
+
+    // ============================================================
     // DEFAULT DENY
     // ============================================================
 

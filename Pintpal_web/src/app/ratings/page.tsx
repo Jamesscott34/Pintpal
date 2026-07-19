@@ -1,16 +1,16 @@
 /**
  * page.tsx — /ratings
  *
- * Purpose: Public beer ratings entry (placeholder until ratings feature lands).
+ * Purpose: Best Pints photo contest — upload, rate 1–10, daily & weekly winners.
  */
 
-import { AppShell } from "@/features/app_shell/components";
-import { RatingsComingSoon } from "@/features/ratings/components/RatingsComingSoon";
+import { AppShell } from "@/features/app_shell/components/AppShell";
+import { BestPintsScreen } from "@/features/ratings/components";
 
 export default function RatingsPage() {
   return (
     <AppShell section="public">
-      <RatingsComingSoon />
+      <BestPintsScreen />
     </AppShell>
   );
 }

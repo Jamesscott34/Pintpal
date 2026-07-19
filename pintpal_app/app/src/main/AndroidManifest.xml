@@ -55,6 +55,12 @@
             android:theme="@style/Theme.Pintpal"
             android:parentActivityName=".MainActivity" />
         <activity
+            android:name=".features.ratings.ui.BestPintsActivity"
+            android:exported="false"
+            android:label="@string/best_pints_title"
+            android:theme="@style/Theme.Pintpal"
+            android:parentActivityName=".MainActivity" />
+        <activity
             android:name=".features.games_common.ui.GamesCommonDemoActivity"
             android:exported="false"
             android:label="@string/games_common_demo_title"

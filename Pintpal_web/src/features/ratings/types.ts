@@ -1,9 +1,34 @@
 /**
- * types.ts
+ * types.ts — Best Pints photo contest
  *
- * Purpose: Stage 0 type placeholder for the ratings feature (web).
- * Connects to: features/ratings components, hooks, and data modules.
- * Notes: Shared types for this feature only. Implementation in later Phase 1 stages.
+ * Purpose: Shared types for pint photo uploads, ratings, and winners.
  */
 
-export {};
+export type PintPhoto = {
+  id: string;
+  userId: string;
+  displayName: string;
+  imageUrl: string;
+  storagePath: string;
+  createdAtMs: number;
+  dayKey: string;
+  weekKey: string;
+  ratingSum: number;
+  ratingCount: number;
+  averageRating: number;
+};
+
+export type ContestWeek = {
+  weekKey: string;
+  status: "open" | "finalists" | "voting" | "closed";
+  finalistIds: string[];
+  winnerId: string | null;
+};
+
+export type ContestDay = {
+  dayKey: string;
+  winnerId: string;
+  averageRating: number;
+  displayName: string;
+  imageUrl: string;
+};

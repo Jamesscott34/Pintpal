@@ -1,0 +1,161 @@
+/**
+ * BestPintsScreen.module.css
+ *
+ * Purpose: Styles for Best Pints photo contest screen.
+ */
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c4a35a;
+  margin: 0;
+}
+
+.title {
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  margin: 0;
+  color: #f2efe6;
+}
+
+.lead {
+  max-width: 36rem;
+  color: #b7c4ba;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.section {
+  margin-top: 4px;
+  padding-top: 20px;
+  border-top: 1px solid #2a3d32;
+}
+
+.sectionTitle {
+  font-size: 1.1rem;
+  margin: 0 0 12px;
+  color: #f2efe6;
+}
+
+.meta {
+  color: #b7c4ba;
+  font-size: 0.95rem;
+  margin: 0 0 12px;
+}
+
+.error {
+  color: #e8a0a0;
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.button {
+  appearance: none;
+  border: 1px solid #3d5a45;
+  background: #1a2a20;
+  color: #f2efe6;
+  padding: 10px 16px;
+  font: inherit;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.fileInput {
+  color: #b7c4ba;
+  font-size: 0.9rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.image {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: #122018;
+  border: 0;
+}
+
+.name {
+  font-weight: 600;
+  color: #f2efe6;
+  margin: 0;
+}
+
+.score {
+  color: #c4a35a;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.rateRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.select {
+  background: #122018;
+  color: #f2efe6;
+  border: 1px solid #3d5a45;
+  padding: 8px;
+  font: inherit;
+  min-height: 40px;
+}
+
+.winnerBanner {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.winnerThumb {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  background: #122018;
+}
+
+.back {
+  color: #c4a35a;
+  text-decoration: none;
+  margin-top: 8px;
+}
+
+@media (max-width: 520px) {
+  .winnerBanner {
+    grid-template-columns: 1fr;
+  }
+}

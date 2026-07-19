@@ -1,104 +1,84 @@
+/**
+ * TransformFragment.kt
+ *
+ * Purpose: Profile tab (renamed from Transform) — account summary + Best Pints entry.
+ */
 package com.jdscott.pintpal.ui.transform
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.Button
 import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.lifecycleScope
 import com.jdscott.pintpal.R
-import com.jdscott.pintpal.databinding.FragmentTransformBinding
-import com.jdscott.pintpal.databinding.ItemTransformBinding
+import com.jdscott.pintpal.features.admin.ui.AdminDashboardActivity
+import com.jdscott.pintpal.features.app_shell.ui.PrivateProfileActivity
+import com.jdscott.pintpal.features.auth.data.AuthRepository
+import com.jdscott.pintpal.features.auth.ui.AuthLoginActivity
+import com.jdscott.pintpal.features.ratings.ui.BestPintsActivity
+import com.jdscott.pintpal.utilities.UserPermissions
+import kotlinx.coroutines.launch
 
-/**
- * Fragment that demonstrates a responsive layout pattern where the format of the content
- * transforms depending on the size of the screen. Specifically this Fragment shows items in
- * the [RecyclerView] using LinearLayoutManager in a small screen
- * and shows items using GridLayoutManager in a large screen.
- */
 class TransformFragment : Fragment() {
 
-    private var _binding: FragmentTransformBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private val authRepository = AuthRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val transformViewModel = ViewModelProvider(this).get(TransformViewModel::class.java)
-        _binding = FragmentTransformBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        savedInstanceState: Bundle?,
+    ): View = inflater.inflate(R.layout.fragment_transform, container, false)
 
-        val recyclerView = binding.recyclerviewTransform
-        val adapter = TransformAdapter()
-        recyclerView.adapter = adapter
-        transformViewModel.texts.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
-        }
-        return root
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val body = view.findViewById<TextView>(R.id.profile_tab_body)
+        val adminButton = view.findViewById<Button>(R.id.profile_tab_admin)
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    class TransformAdapter :
-        ListAdapter<String, TransformViewHolder>(object : DiffUtil.ItemCallback<String>() {
-
-            override fun areItemsTheSame(oldItem: String, newItem: String): Boolean =
-                oldItem == newItem
-
-            override fun areContentsTheSame(oldItem: String, newItem: String): Boolean =
-                oldItem == newItem
-        }) {
-
-        private val drawables = listOf(
-            R.drawable.avatar_1,
-            R.drawable.avatar_2,
-            R.drawable.avatar_3,
-            R.drawable.avatar_4,
-            R.drawable.avatar_5,
-            R.drawable.avatar_6,
-            R.drawable.avatar_7,
-            R.drawable.avatar_8,
-            R.drawable.avatar_9,
-            R.drawable.avatar_10,
-            R.drawable.avatar_11,
-            R.drawable.avatar_12,
-            R.drawable.avatar_13,
-            R.drawable.avatar_14,
-            R.drawable.avatar_15,
-            R.drawable.avatar_16,
-        )
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransformViewHolder {
-            val binding = ItemTransformBinding.inflate(LayoutInflater.from(parent.context))
-            return TransformViewHolder(binding)
+        viewLifecycleOwner.lifecycleScope.launch {
+            val document = authRepository.loadCurrentUserDocument().getOrNull()
+            if (document == null) {
+                startActivity(Intent(requireContext(), AuthLoginActivity::class.java))
+                requireActivity().finish()
+                return@launch
+            }
+            val flags = document.toPermissionFlags()
+            val paid = UserPermissions.isSubscriptionPaid(flags)
+            val photoLine = if (paid) {
+                getString(R.string.auth_subscription_paid)
+            } else {
+                getString(
+                    R.string.auth_subscription_free,
+                    UserPermissions.remainingPhotoUploadsToday(flags),
+                )
+            }
+            body.text = buildString {
+                appendLine(document.name)
+                appendLine(document.email)
+                append("Plan: ")
+                appendLine(if (paid) "Paid" else "Free")
+                append(photoLine)
+            }
+            adminButton.visibility =
+                if (UserPermissions.canViewAdmin(flags)) View.VISIBLE else View.GONE
         }
 
-        override fun onBindViewHolder(holder: TransformViewHolder, position: Int) {
-            holder.textView.text = getItem(position)
-            holder.imageView.setImageDrawable(
-                ResourcesCompat.getDrawable(holder.imageView.resources, drawables[position], null)
-            )
+        view.findViewById<Button>(R.id.profile_tab_best_pints).setOnClickListener {
+            startActivity(Intent(requireContext(), BestPintsActivity::class.java))
         }
-    }
-
-    class TransformViewHolder(binding: ItemTransformBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        val imageView: ImageView = binding.imageViewItemTransform
-        val textView: TextView = binding.textViewItemTransform
+        view.findViewById<Button>(R.id.profile_tab_full_profile).setOnClickListener {
+            startActivity(Intent(requireContext(), PrivateProfileActivity::class.java))
+        }
+        adminButton.setOnClickListener {
+            startActivity(Intent(requireContext(), AdminDashboardActivity::class.java))
+        }
+        view.findViewById<Button>(R.id.profile_tab_sign_out).setOnClickListener {
+            authRepository.signOut()
+            startActivity(Intent(requireContext(), AuthLoginActivity::class.java))
+            requireActivity().finish()
+        }
     }
 }

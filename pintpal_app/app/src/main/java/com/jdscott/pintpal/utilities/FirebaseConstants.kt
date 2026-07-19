@@ -17,6 +17,50 @@ object FirebaseConstants {
         const val POUR_GAME_SCORES = "pour_game_scores"
         /** Serving Rush scores only — never mixed with pour or ratings boards. */
         const val SERVING_GAME_SCORES = "serving_game_scores"
+        /** Community pint photo contest entries. */
+        const val PINT_PHOTOS = "pint_photos"
+        /** Weekly contest finalists + winner (doc id = weekKey). */
+        const val CONTEST_WEEKS = "contest_weeks"
+        /** Daily winners cache (doc id = dayKey yyyy-MM-dd). */
+        const val CONTEST_DAYS = "contest_days"
+    }
+
+    object PintPhotoFields {
+        const val USER_ID = "userId"
+        const val DISPLAY_NAME = "displayName"
+        const val IMAGE_URL = "imageUrl"
+        const val STORAGE_PATH = "storagePath"
+        const val CREATED_AT = "createdAt"
+        const val DAY_KEY = "dayKey"
+        const val WEEK_KEY = "weekKey"
+        const val RATING_SUM = "ratingSum"
+        const val RATING_COUNT = "ratingCount"
+        const val AVERAGE_RATING = "averageRating"
+    }
+
+    object PintPhotoRatingFields {
+        const val SCORE = "score"
+        const val CREATED_AT = "createdAt"
+    }
+
+    object ContestWeekFields {
+        const val STATUS = "status"
+        const val FINALIST_IDS = "finalistIds"
+        const val WINNER_ID = "winnerId"
+        const val UPDATED_AT = "updatedAt"
+    }
+
+    object ContestVoteFields {
+        const val PHOTO_ID = "photoId"
+        const val CREATED_AT = "createdAt"
+    }
+
+    object ContestDayFields {
+        const val WINNER_ID = "winnerId"
+        const val AVERAGE_RATING = "averageRating"
+        const val DISPLAY_NAME = "displayName"
+        const val IMAGE_URL = "imageUrl"
+        const val UPDATED_AT = "updatedAt"
     }
 
     object UserFields {

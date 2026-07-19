@@ -16,7 +16,7 @@ export function PublicHub() {
       <p className={styles.eyebrow}>Public</p>
       <h1 className={styles.title}>Community</h1>
       <p className={styles.lead}>
-        Games, chats, beer ratings, and scoreboards. Your private profile is under
+        Games, chats, Best Pints photos, and scoreboards. Your private profile is under
         Private.
       </p>
 
@@ -66,13 +66,13 @@ export function PublicHub() {
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Beer ratings</h2>
+        <h2 className={styles.sectionTitle}>Best Pints</h2>
         <ul className={styles.list}>
           <li>
             <Link className={styles.item} href="/ratings">
-              <span className={styles.itemTitle}>Rate & review drinks</span>
+              <span className={styles.itemTitle}>Upload &amp; rate pint photos</span>
               <span className={styles.itemMeta}>
-                Community beer ratings (rolling out)
+                Score out of 10 · daily winners · weekly top 3 vote
               </span>
             </Link>
           </li>
