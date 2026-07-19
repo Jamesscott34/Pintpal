@@ -22,4 +22,14 @@
     <string name="image_view_item_transform_content_description">Represents an image view in the
         item
     </string>
+
+    <!-- games_common — bartender pour skill (not drinking) -->
+    <string name="games_common_brand">PintPal</string>
+    <string name="games_common_demo_title">Pour mechanic demo</string>
+    <string name="games_common_skill_note">Bartender skill challenge — scored on pour accuracy, not drinking.</string>
+    <string name="games_common_glass_cd">Pour glass with liquid and head layers</string>
+    <string name="games_common_hold_hint">Press and hold the glass to pour; release to stop and score.</string>
+    <string name="games_common_score_hint">Stop near the ideal band for a higher Perfect Pour Accuracy score.</string>
+    <string name="games_common_reset">Reset glass</string>
+    <string name="games_common_consistency">Run consistency check</string>
 </resources>

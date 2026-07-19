@@ -7,4 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- games_common pour mechanic -->
+    <color name="games_common_bg">#FF0F1A14</color>
+    <color name="games_common_text">#FFF2EFE6</color>
+    <color name="games_common_muted">#FFB7C4BA</color>
+    <color name="games_common_accent">#FFC4A35A</color>
 </resources>

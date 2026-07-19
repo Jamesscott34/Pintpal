@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  games_common_demo_activity.xml
+  Purpose: Stage 1 demo layout for shared pour mechanic verification.
+  Connects to: GamesCommonDemoActivity + PourGlassView.
+  Notes: res/layout has no subfolders — feature-prefixed filename required.
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/games_common_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.12"
+            android:text="@string/games_common_brand"
+            android:textAllCaps="true"
+            android:textColor="@color/games_common_accent"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/games_common_demo_title"
+            android:textColor="@color/games_common_text"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/games_common_skill_note"
+            android:textColor="@color/games_common_muted"
+            android:textSize="13sp" />
+
+        <com.jdscott.pintpal.features.games_common.ui.PourGlassView
+            android:id="@+id/games_common_pour_glass"
+            android:layout_width="180dp"
+            android:layout_height="280dp"
+            android:layout_marginTop="24dp"
+            android:contentDescription="@string/games_common_glass_cd" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:text="@string/games_common_hold_hint"
+            android:textColor="@color/games_common_muted"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/games_common_score_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="@string/games_common_score_hint"
+            android:textColor="@color/games_common_text"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/games_common_reset_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/games_common_reset" />
+
+        <Button
+            android:id="@+id/games_common_consistency_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/games_common_consistency" />
+
+        <TextView
+            android:id="@+id/games_common_consistency_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/games_common_muted"
+            android:textSize="13sp" />
+    </LinearLayout>
+</ScrollView>
