@@ -2,10 +2,11 @@
  * page.tsx
  *
  * Purpose: Server-rendered public home page for PintPal web (crawlable HTML for search engines).
- * Connects to: App Router root. Feature UIs will be composed from features/* in later stages.
- * Notes: No client Firebase calls here. Stage 0 scaffolding only — no auth or product features yet.
+ * Connects to: App Router root. Links into auth routes under /login and /register.
+ * Notes: No client Firebase calls here. Keep public marketing content server-rendered.
  */
 
+import Link from "next/link";
 import styles from "./page.module.css";
 
 export default function Home() {
@@ -19,6 +20,11 @@ export default function Home() {
             PintPal is a multi-user drinks discovery platform. Public category
             pages and search come in Phase 1; this home page is server-rendered
             HTML so search engines and Google Search Console can index it.
+          </p>
+          <p>
+            <Link href="/login">Sign in</Link>
+            {" · "}
+            <Link href="/register">Create account</Link>
           </p>
         </div>
       </main>

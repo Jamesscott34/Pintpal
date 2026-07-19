@@ -1,9 +1,17 @@
 /**
- * index.ts
+ * index.ts (auth/data)
  *
- * Purpose: Stage 0 data-layer placeholder for the auth feature (web).
- * Connects to: Firestore/Auth via utilities/firebase.ts. Used by features/auth/hooks.
- * Notes: No live queries yet in Stage 0.
+ * Purpose: Public exports for auth data-layer functions.
+ * Connects to: features/auth/hooks and components.
  */
 
-export {};
+export {
+  registerWithEmail,
+  signInWithEmail,
+  signInWithGoogle,
+  signOut,
+  subscribeToAuth,
+  loadUserDocument,
+  loadAndEnforceLogin,
+  LoginDeniedError,
+} from "./authRepository";

@@ -8,6 +8,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <!-- auth — Stage 1 palette -->
+    <color name="auth_bg">#FF0F1A14</color>
+    <color name="auth_text">#FFF2EFE6</color>
+    <color name="auth_accent">#FFC4A35A</color>
+
     <!-- games_common pour mechanic -->
     <color name="games_common_bg">#FF0F1A14</color>
     <color name="games_common_text">#FFF2EFE6</color>

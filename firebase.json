@@ -1,0 +1,23 @@
+{
+  "hosting": {
+    "public": "Pintpal_web/out",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "cleanUrls": true,
+    "trailingSlash": true,
+    "headers": [
+      {
+        "source": "**/*.@(js|css|svg|png|jpg|jpeg|gif|webp|ico)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public,max-age=31536000,immutable"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -19,6 +19,10 @@ Pintpal_web/.next/
 Pintpal_web/out/
 Pintpal_web/coverage/
 Pintpal_web/*.tsbuildinfo
+
+# Firebase
+.firebase/
+
 # Env / secrets (keep example files only)
 .env
 .env.*

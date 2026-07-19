@@ -1,9 +1,11 @@
 /**
- * index.ts
+ * index.ts (auth/components)
  *
- * Purpose: Stage 0 components placeholder for the auth feature (web).
- * Connects to: features/auth pages composed from app/ routes.
- * Notes: Feature-local components only; shared widgets go in src/components.
+ * Purpose: Public exports for auth feature components.
+ * Connects to: App Router pages under app/login, app/register, app/account.
+ * Notes: Feature-local components only.
  */
 
-export {};
+export { LoginForm } from "./LoginForm";
+export { RegisterForm } from "./RegisterForm";
+export { AccountPanel } from "./AccountPanel";

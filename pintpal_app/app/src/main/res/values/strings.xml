@@ -23,6 +23,25 @@
         item
     </string>
 
+    <!-- auth — Stage 1 -->
+    <string name="auth_brand">PintPal</string>
+    <string name="auth_login_title">Sign in</string>
+    <string name="auth_register_title">Create account</string>
+    <string name="auth_name_hint">Name</string>
+    <string name="auth_email_hint">Email</string>
+    <string name="auth_password_hint">Password</string>
+    <string name="auth_login_button">Sign in</string>
+    <string name="auth_register_button">Register</string>
+    <string name="auth_google_button">Continue with Google</string>
+    <string name="auth_go_register">Need an account? Register</string>
+    <string name="auth_go_login">Already have an account? Sign in</string>
+    <string name="auth_sign_out">Sign out</string>
+    <string name="auth_signed_in_as">Signed in as %1$s</string>
+    <string name="auth_google_not_configured">Google Sign-In needs your Firebase Web client ID in auth_google_web_client_id (and Google enabled in Firebase Auth).</string>
+    <string name="auth_google_failed">Google Sign-In failed (code %1$s)</string>
+    <!-- Paste Web client ID from Firebase Console → Project settings → Your apps / Google Cloud OAuth (type Web). -->
+    <string name="auth_google_web_client_id"></string>
+
     <!-- games_common — bartender pour skill (not drinking) -->
     <string name="games_common_brand">PintPal</string>
     <string name="games_common_demo_title">Pour mechanic demo</string>
@@ -44,5 +63,22 @@
     <string name="pour_game_hold_to_pour">Hold to pour</string>
     <string name="pour_game_settling">Settling…</string>
     <string name="pour_game_pour_finished">Pour finished</string>
-    <string name="pour_game_reset">Reset practice</string>
+    <string name="pour_game_reset">Reset pour</string>
+    <string name="pour_game_timed_title">Timed pour</string>
+    <string name="pour_game_timed_sub">Complete as many two-part pours as you can. Score is the sum of Perfect Pour Accuracies — not drinking.</string>
+    <string name="pour_game_start_timed">Start timed run</string>
+    <string name="pour_game_times_up">Time\'s up — input locked</string>
+    <string name="pour_game_new_timed">New timed run</string>
+    <string name="pour_game_scoreboard_title">Pour scoreboard</string>
+    <string name="pour_game_scoreboard_sub">Public Perfect Pour Accuracy standings (opt-in). Separate from ratings and contribution leaderboards.</string>
+    <string name="pour_game_opt_in">Show my best on the public pour scoreboard</string>
+    <string name="pour_game_filter_practice">Practice</string>
+    <string name="pour_game_filter_timed">Timed</string>
+    <string name="pour_game_saved_personal_best">Personal best updated on your profile</string>
+    <string name="pour_game_not_personal_best">Run saved — did not beat your personal best</string>
+    <string name="pour_game_sign_in_to_save">Sign in to save scores to your profile</string>
+    <string name="pour_game_level_fmt">Level %1$d · %2$s</string>
+    <string name="pour_game_hub_practice">Practice (progressive)</string>
+    <string name="pour_game_hub_timed">Timed run</string>
+    <string name="pour_game_hub_scoreboard">Public scoreboard</string>
 </resources>

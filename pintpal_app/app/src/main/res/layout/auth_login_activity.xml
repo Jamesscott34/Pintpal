@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  auth_login_activity.xml
+  Purpose: Email/password and Google sign-in form for the auth feature.
+  Connects to: AuthLoginActivity. Resource prefix "auth_" (flat res/ namespace).
+  Notes: AAPT does not allow feature subfolders under res/layout. Dark green Stage 1 palette.
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/auth_bg"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/auth_brand"
+            android:textAllCaps="true"
+            android:textColor="@color/auth_accent"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/auth_login_title"
+            android:textColor="@color/auth_text"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:hint="@string/auth_email_hint"
+            android:textColorHint="@color/auth_text"
+            app:boxStrokeColor="@color/auth_accent"
+            app:hintTextColor="@color/auth_accent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/auth_login_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="emailAddress"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/auth_text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="@string/auth_password_hint"
+            android:textColorHint="@color/auth_text"
+            app:boxStrokeColor="@color/auth_accent"
+            app:endIconMode="password_toggle"
+            app:hintTextColor="@color/auth_accent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/auth_login_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="password"
+                android:inputType="textPassword"
+                android:textColor="@color/auth_text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/auth_login_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="#FFCF6679"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/auth_login_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/auth_accent"
+            android:text="@string/auth_login_button"
+            android:textColor="@color/auth_bg" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/auth_login_google"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/auth_google_button"
+            android:textColor="@color/auth_text"
+            app:strokeColor="@color/auth_accent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/auth_login_go_register"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/auth_go_register"
+            android:textColor="@color/auth_accent" />
+
+        <ProgressBar
+            android:id="@+id/auth_login_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:indeterminateTint="@color/auth_accent"
+            android:visibility="gone" />
+    </LinearLayout>
+</ScrollView>

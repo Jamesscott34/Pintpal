@@ -1,0 +1,105 @@
+/**
+ * AuthForms.module.css
+ *
+ * Purpose: Shared styles for login, register, and account panels.
+ * Connects to: LoginForm, RegisterForm, AccountPanel components.
+ * Notes: Plain CSS module for crawlable/static styling; matches home page palette.
+ */
+
+.panel {
+  --bg: #0f1a14;
+  --surface: #16241c;
+  --text: #f2efe6;
+  --muted: #b7c4ba;
+  --accent: #c4a35a;
+  --danger: #e57373;
+
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(ellipse at top, #24362c 0%, transparent 55%),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--font-geist-sans), Georgia, serif;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--surface);
+  padding: 40px 32px;
+  border-bottom: 4px solid var(--accent);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.brand {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.input {
+  padding: 12px 14px;
+  border: 1px solid #2f4338;
+  background: #0f1a14;
+  color: var(--text);
+  font-size: 16px;
+}
+
+.button {
+  margin-top: 8px;
+  padding: 12px 16px;
+  border: none;
+  background: var(--accent);
+  color: #0f1a14;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.buttonSecondary {
+  margin-top: 0;
+  padding: 12px 16px;
+  border: 1px solid #2f4338;
+  background: transparent;
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.link {
+  color: var(--accent);
+  font-size: 14px;
+  text-align: center;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 14px;
+}
+
+.meta {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
