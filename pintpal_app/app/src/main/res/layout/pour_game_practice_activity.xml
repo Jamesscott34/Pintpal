@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  pour_game_practice_activity.xml
+  Purpose: Practice mode layout for Pour the Perfect Pint (two-part pour, no timer).
+  Connects to: PourPracticeActivity.
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/games_common_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.12"
+            android:text="@string/pour_game_brand"
+            android:textAllCaps="true"
+            android:textColor="@color/games_common_accent"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/pour_game_title"
+            android:textColor="@color/games_common_text"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/pour_game_practice_sub"
+            android:textColor="@color/games_common_muted"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/pour_game_phase_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/games_common_accent"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/pour_game_hint_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:textColor="@color/games_common_muted"
+            android:textSize="13sp" />
+
+        <com.jdscott.pintpal.features.games_common.ui.PourGlassView
+            android:id="@+id/pour_game_glass"
+            android:layout_width="180dp"
+            android:layout_height="280dp"
+            android:layout_marginTop="20dp"
+            android:contentDescription="@string/games_common_glass_cd" />
+
+        <Button
+            android:id="@+id/pour_game_pour_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:minWidth="200dp"
+            android:text="@string/pour_game_hold_to_pour" />
+
+        <Button
+            android:id="@+id/pour_game_reset_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/pour_game_reset" />
+
+        <TextView
+            android:id="@+id/pour_game_score_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:textColor="@color/games_common_text"
+            android:textSize="16sp" />
+    </LinearLayout>
+</ScrollView>

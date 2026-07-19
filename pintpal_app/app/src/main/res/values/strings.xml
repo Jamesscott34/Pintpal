@@ -32,4 +32,17 @@
     <string name="games_common_score_hint">Stop near the ideal band for a higher Perfect Pour Accuracy score.</string>
     <string name="games_common_reset">Reset glass</string>
     <string name="games_common_consistency">Run consistency check</string>
+
+    <!-- pour_game — Pour the Perfect Pint -->
+    <string name="pour_game_brand">PintPal</string>
+    <string name="pour_game_title">Pour the Perfect Pint</string>
+    <string name="pour_game_practice_sub">Practice mode — bartender pour skill. No timer. Scored on Perfect Pour Accuracy, not drinking.</string>
+    <string name="pour_game_phase_first">Phase 1 · First pour</string>
+    <string name="pour_game_phase_settle">Phase 2 · Settle</string>
+    <string name="pour_game_phase_top_up">Phase 3 · Top-up</string>
+    <string name="pour_game_phase_complete">Round complete</string>
+    <string name="pour_game_hold_to_pour">Hold to pour</string>
+    <string name="pour_game_settling">Settling…</string>
+    <string name="pour_game_pour_finished">Pour finished</string>
+    <string name="pour_game_reset">Reset practice</string>
 </resources>

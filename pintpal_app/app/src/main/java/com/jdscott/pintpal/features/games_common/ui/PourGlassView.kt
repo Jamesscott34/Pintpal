@@ -130,6 +130,17 @@ class PourGlassView @JvmOverloads constructor(
         invalidate()
     }
 
+    /**
+     * Lets a parent game controller (e.g. two-part pour) drive liquid/head levels
+     * while this view remains display-only.
+     */
+    fun applyExternalState(external: PourState) {
+        looping = false
+        removeCallbacks(frameCallback)
+        state = external.copy(isPouring = false)
+        invalidate()
+    }
+
     fun scoreNow(): PourScore = PourAccuracyScorer.score(state, config)
 
     fun getLastScore(): PourScore? = lastScore

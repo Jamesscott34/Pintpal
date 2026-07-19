@@ -29,6 +29,11 @@
             android:exported="false"
             android:label="@string/games_common_demo_title"
             android:theme="@style/Theme.Pintpal" />
+        <activity
+            android:name=".features.pour_game.ui.PourPracticeActivity"
+            android:exported="false"
+            android:label="@string/pour_game_title"
+            android:theme="@style/Theme.Pintpal" />
     </application>
 
 </manifest>
