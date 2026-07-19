@@ -1,0 +1,57 @@
+.hub {
+  max-width: 36rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.brand {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c4a35a;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  color: #f2efe6;
+}
+
+.lead {
+  margin: 0;
+  color: #b7c4ba;
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.actions button,
+.back {
+  min-height: 48px;
+  padding: 12px 16px;
+  border-radius: 6px;
+  border: 1px solid #3d5648;
+  background: #16241c;
+  color: #f2efe6;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.actions button:first-child {
+  background: #c4a35a;
+  border-color: #c4a35a;
+  color: #0f1a14;
+}
+
+.back {
+  margin-bottom: 12px;
+  background: transparent;
+}

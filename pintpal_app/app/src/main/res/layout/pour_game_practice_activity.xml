@@ -46,6 +46,15 @@
             android:textSize="13sp" />
 
         <TextView
+            android:id="@+id/pour_game_level_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/games_common_accent"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
             android:id="@+id/pour_game_phase_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -1,0 +1,80 @@
+/**
+ * PourGameHub.module.css
+ *
+ * Purpose: Styles for pour game mode picker.
+ * Connects to: PourGameHub.tsx.
+ */
+
+.hub {
+  --background: #0f1a14;
+  --surface: #16241c;
+  --text-primary: #f2efe6;
+  --text-secondary: #b7c4ba;
+  --accent: #c4a35a;
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at top, #24362c 0%, transparent 55%),
+    var(--background);
+  color: var(--text-primary);
+  font-family: var(--font-geist-sans), Georgia, serif;
+}
+
+.brand {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.hub h1 {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.sub {
+  margin: 0;
+  max-width: 26rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.actions button,
+.back {
+  appearance: none;
+  border: none;
+  background: var(--accent);
+  color: #121a16;
+  font: inherit;
+  font-weight: 600;
+  padding: 0.85rem 1.25rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.back {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: transparent;
+  color: var(--text-secondary, #b7c4ba);
+  border: 1px solid rgba(183, 196, 186, 0.35);
+  z-index: 2;
+}

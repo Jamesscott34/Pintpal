@@ -11,7 +11,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -22,8 +21,13 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.appcompat.app.AppCompatActivity
 import com.jdscott.pintpal.databinding.ActivityMainBinding
+import com.jdscott.pintpal.features.admin.ui.AdminDashboardActivity
+import com.jdscott.pintpal.features.app_shell.ui.PrivateProfileActivity
+import com.jdscott.pintpal.features.app_shell.ui.PublicHubActivity
 import com.jdscott.pintpal.features.auth.data.AuthRepository
+import com.jdscott.pintpal.features.auth.domain.UserDocument
 import com.jdscott.pintpal.features.auth.ui.AuthLoginActivity
+import com.jdscott.pintpal.utilities.UserPermissions
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -31,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private val authRepository = AuthRepository()
+    private var isAdminUser: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,30 +48,38 @@ class MainActivity : AppCompatActivity() {
                 finish()
                 return@launch
             }
-            setupUi(document.name.ifBlank { document.email })
+            isAdminUser = UserPermissions.canViewAdmin(document.toPermissionFlags())
+            setupUi(document)
         }
     }
 
-    private fun setupUi(displayName: String) {
+    private fun setupUi(document: UserDocument) {
+        val displayName = document.name.ifBlank { document.email }
+        val email = document.email
+        val flags = document.toPermissionFlags()
+        val subscriptionLine = if (UserPermissions.isSubscriptionPaid(flags)) {
+            getString(R.string.auth_subscription_paid)
+        } else {
+            getString(
+                R.string.auth_subscription_free,
+                UserPermissions.remainingPhotoUploadsToday(flags),
+            )
+        }
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
 
-        binding.appBarMain.fab?.setOnClickListener { view ->
-            Snackbar.make(view, getString(R.string.auth_signed_in_as, displayName), Snackbar.LENGTH_LONG)
-                .setAction(R.string.auth_sign_out) {
-                    authRepository.signOut()
-                    startActivity(Intent(this, AuthLoginActivity::class.java))
-                    finish()
-                }
-                .setAnchorView(R.id.fab).show()
+        // FAB opens Public section (games & chats).
+        binding.appBarMain.fab?.setOnClickListener {
+            startActivity(Intent(this, PublicHubActivity::class.java))
         }
 
         val navHostFragment =
             (supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?)!!
         val navController = navHostFragment.navController
 
-        binding.navView?.let {
+        binding.navView?.let { navView ->
             appBarConfiguration = AppBarConfiguration(
                 setOf(
                     R.id.nav_transform, R.id.nav_reflow, R.id.nav_slideshow, R.id.nav_settings
@@ -74,7 +87,15 @@ class MainActivity : AppCompatActivity() {
                 binding.drawerLayout
             )
             setupActionBarWithNavController(navController, appBarConfiguration)
-            it.setupWithNavController(navController)
+            navView.setupWithNavController(navController)
+
+            val header = navView.getHeaderView(0)
+            header.findViewById<android.widget.TextView>(R.id.textView)?.text =
+                getString(
+                    R.string.nav_header_user_line,
+                    email.ifBlank { displayName },
+                    subscriptionLine,
+                )
         }
 
         binding.appBarMain.contentMain.bottomNavView?.let {
@@ -91,15 +112,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         if (!::binding.isInitialized) return false
         val result = super.onCreateOptionsMenu(menu)
-        // Using findViewById because NavigationView exists in different layout files
-        // between w600dp and w1240dp
         val navView: NavigationView? = findViewById(R.id.nav_view)
         if (navView == null) {
-            // The navigation drawer already has the items including the items in the overflow menu
-            // We only inflate the overflow menu if the navigation drawer isn't visible
             menuInflater.inflate(R.menu.overflow, menu)
         }
-        menu.add(0, MENU_SIGN_OUT, 0, R.string.auth_sign_out)
+        menu.add(0, MENU_PUBLIC, 0, R.string.menu_public)
+        menu.add(0, MENU_PRIVATE, 1, R.string.menu_private)
+        if (isAdminUser) {
+            menu.add(0, MENU_ADMIN, 2, R.string.menu_admin)
+        }
+        menu.add(0, MENU_SIGN_OUT, 3, R.string.auth_sign_out)
         return result
     }
 
@@ -108,6 +130,18 @@ class MainActivity : AppCompatActivity() {
             R.id.nav_settings -> {
                 val navController = findNavController(R.id.nav_host_fragment_content_main)
                 navController.navigate(R.id.nav_settings)
+            }
+            MENU_PUBLIC -> {
+                startActivity(Intent(this, PublicHubActivity::class.java))
+                return true
+            }
+            MENU_PRIVATE -> {
+                startActivity(Intent(this, PrivateProfileActivity::class.java))
+                return true
+            }
+            MENU_ADMIN -> {
+                startActivity(Intent(this, AdminDashboardActivity::class.java))
+                return true
             }
             MENU_SIGN_OUT -> {
                 authRepository.signOut()
@@ -127,5 +161,8 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val MENU_SIGN_OUT = 1001
+        private const val MENU_PUBLIC = 1002
+        private const val MENU_PRIVATE = 1003
+        private const val MENU_ADMIN = 1004
     }
 }

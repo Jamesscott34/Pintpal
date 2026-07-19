@@ -26,15 +26,23 @@ export function RegisterForm() {
     clearError();
     try {
       await register(email, password, name);
-      router.push("/account");
+      router.push("/public");
     } catch {
-      // errorMessage set in hook
+      // errorMessage set in hook — shown inline, never as a browser popup
     }
   }
 
   return (
     <div className={styles.panel}>
       <form className={styles.card} onSubmit={onSubmit}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          className={styles.logo}
+          src="/pintpal-icon.png"
+          alt="PintPal"
+          width={72}
+          height={72}
+        />
         <p className={styles.brand}>PintPal</p>
         <h1 className={styles.title}>Create account</h1>
         <label className={styles.label}>

@@ -3,7 +3,8 @@
  *
  * Purpose: Domain model for a Firestore users/{uid} document shared with the web client.
  * Connects to: Firestore collection "users". Used by AuthRepository, PourGameScoreRepository.
- * Notes: forNewRegistration sets role="user", canLogin=true, canViewAdmin=false only.
+ * Notes: forNewRegistration sets role="user", canLogin=true, canViewAdmin=false,
+ *        subscriptionPaid=false only. Admins are treated as paid in UserPermissions.
  *        Pour-game profile fields store personal bests only (never drinking metrics).
  */
 package com.jdscott.pintpal.features.auth.domain
@@ -18,6 +19,11 @@ data class UserDocument(
     val role: String = DEFAULT_ROLE,
     val canLogin: Boolean = true,
     val canViewAdmin: Boolean = false,
+    /** Stored flag: true == paid, false == free. Prefer UserPermissions.isSubscriptionPaid. */
+    val subscriptionPaid: Boolean = false,
+    val photoUploadsToday: Int = 0,
+    /** yyyy-MM-dd (UTC) of the last counted free-tier photo upload day. */
+    val photoUploadDate: String? = null,
     /** Best practice Perfect Pour Accuracy (0–100). Null if never played. */
     val pourGameBestPracticeAccuracy: Double? = null,
     /** Duration seconds → best timed accuracy sum. */
@@ -32,9 +38,14 @@ data class UserDocument(
             FirebaseConstants.UserFields.ROLE to role,
             FirebaseConstants.UserFields.CAN_LOGIN to canLogin,
             FirebaseConstants.UserFields.CAN_VIEW_ADMIN to canViewAdmin,
+            FirebaseConstants.UserFields.SUBSCRIPTION_PAID to subscriptionPaid,
+            FirebaseConstants.UserFields.PHOTO_UPLOADS_TODAY to photoUploadsToday,
             FirebaseConstants.UserFields.POUR_GAME_SCOREBOARD_OPT_IN to pourGameScoreboardOptIn,
             FirebaseConstants.UserFields.POUR_GAME_BEST_TIMED to pourGameBestTimedAccuracySums,
         )
+        photoUploadDate?.let {
+            map[FirebaseConstants.UserFields.PHOTO_UPLOAD_DATE] = it
+        }
         pourGameBestPracticeAccuracy?.let {
             map[FirebaseConstants.UserFields.POUR_GAME_BEST_PRACTICE] = it
         }
@@ -47,6 +58,9 @@ data class UserDocument(
         role = role,
         email = email,
         name = name,
+        subscriptionPaid = subscriptionPaid,
+        photoUploadsToday = photoUploadsToday,
+        photoUploadDate = photoUploadDate,
     )
 
     companion object {
@@ -60,6 +74,9 @@ data class UserDocument(
                 role = DEFAULT_ROLE,
                 canLogin = true,
                 canViewAdmin = false,
+                subscriptionPaid = false,
+                photoUploadsToday = 0,
+                photoUploadDate = null,
             )
         }
 
@@ -79,6 +96,12 @@ data class UserDocument(
                 role = data[FirebaseConstants.UserFields.ROLE] as? String ?: DEFAULT_ROLE,
                 canLogin = data[FirebaseConstants.UserFields.CAN_LOGIN] as? Boolean ?: false,
                 canViewAdmin = data[FirebaseConstants.UserFields.CAN_VIEW_ADMIN] as? Boolean ?: false,
+                subscriptionPaid =
+                    data[FirebaseConstants.UserFields.SUBSCRIPTION_PAID] as? Boolean ?: false,
+                photoUploadsToday =
+                    (data[FirebaseConstants.UserFields.PHOTO_UPLOADS_TODAY] as? Number)?.toInt() ?: 0,
+                photoUploadDate =
+                    data[FirebaseConstants.UserFields.PHOTO_UPLOAD_DATE] as? String,
                 pourGameBestPracticeAccuracy = practice,
                 pourGameBestTimedAccuracySums = timed,
                 pourGameScoreboardOptIn =

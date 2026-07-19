@@ -1,0 +1,49 @@
+.screen {
+  max-width: 36rem;
+  margin: 0 auto;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: clamp(1.4rem, 3.5vw, 1.9rem);
+  color: #f2efe6;
+}
+
+.lead {
+  color: #b7c4ba;
+  line-height: 1.5;
+}
+
+.error {
+  color: #c45a5a;
+}
+
+.list {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 2rem 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #2a3d32;
+}
+
+.rank {
+  color: #c4a35a;
+  font-weight: 700;
+}
+
+.name {
+  color: #f2efe6;
+  word-break: break-word;
+}
+
+.score {
+  color: #f2efe6;
+  font-weight: 700;
+}

@@ -19,7 +19,7 @@ import com.jdscott.pintpal.features.games_common.domain.PourState
 import kotlin.math.abs
 
 class TwoPartPourController(
-    private val difficulty: PracticeDifficulty = PracticeLevels.LEVEL_1,
+    difficulty: PracticeDifficulty = PracticeLevels.LEVEL_1,
     private val listener: Listener,
 ) {
     interface Listener {
@@ -27,6 +27,11 @@ class TwoPartPourController(
         fun onStateChanged(state: PourState, config: PourConfig)
         fun onRoundComplete(score: PourScore)
     }
+
+    var difficulty: PracticeDifficulty = difficulty
+        private set
+
+    var inputLocked: Boolean = false
 
     var phase: PourPhase = PourPhase.FIRST_POUR
         private set
@@ -40,7 +45,14 @@ class TwoPartPourController(
     private val mainHandler = Handler(Looper.getMainLooper())
     private val frameCallback = object : Choreographer.FrameCallback {
         override fun doFrame(frameTimeNanos: Long) {
-            if (!looping) return
+            if (!looping || inputLocked) {
+                if (inputLocked) {
+                    pouring = false
+                    state = state.copy(isPouring = false)
+                    stopLoop()
+                }
+                return
+            }
             val now = frameTimeNanos
             val dt = if (lastFrameNanos == 0L) {
                 0.016f
@@ -112,7 +124,24 @@ class TwoPartPourController(
     }
 
     fun canPour(): Boolean =
-        phase == PourPhase.FIRST_POUR || phase == PourPhase.TOP_UP
+        !inputLocked && (phase == PourPhase.FIRST_POUR || phase == PourPhase.TOP_UP)
+
+    fun setDifficulty(next: PracticeDifficulty) {
+        difficulty = next
+        listener.onStateChanged(state, currentConfig())
+    }
+
+    fun lockInput() {
+        inputLocked = true
+        pouring = false
+        state = state.copy(isPouring = false)
+        stopLoop()
+        listener.onStateChanged(state, currentConfig())
+    }
+
+    fun unlockInput() {
+        inputLocked = false
+    }
 
     fun startPour() {
         if (!canPour() || pouring) return

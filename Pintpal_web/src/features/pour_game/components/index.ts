@@ -6,3 +6,6 @@
  */
 
 export { PracticePourScreen } from "./PracticePourScreen";
+export { TimedPourScreen } from "./TimedPourScreen";
+export { PourGameHub } from "./PourGameHub";
+export { PourScoreboardScreen } from "./PourScoreboardScreen";

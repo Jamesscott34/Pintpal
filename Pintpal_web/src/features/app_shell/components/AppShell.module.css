@@ -1,0 +1,139 @@
+/**
+ * AppShell.module.css
+ *
+ * Purpose: Layout styles for Public / Private / Admin shell (phone → laptop).
+ */
+
+.shell {
+  --bg: #0f1a14;
+  --surface: #16241c;
+  --text: #f2efe6;
+  --muted: #b7c4ba;
+  --accent: #c4a35a;
+  --line: #2a3d32;
+
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at top, #24362c 0%, transparent 50%),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--font-geist-sans), Georgia, serif;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(15, 26, 20, 0.9);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(8px);
+}
+
+.logoLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.brand {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.navLink,
+.navActive {
+  text-decoration: none;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.navActive {
+  color: var(--text);
+  border-bottom: 2px solid var(--accent);
+}
+
+.userMeta {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.main {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px 56px;
+}
+
+.gate {
+  max-width: 420px;
+  margin: 80px auto;
+  padding: 32px;
+  background: var(--surface);
+  border-bottom: 4px solid var(--accent);
+}
+
+.title {
+  font-size: 28px;
+  margin: 8px 0 12px;
+}
+
+.meta {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.link {
+  display: inline-block;
+  margin-top: 16px;
+  color: var(--accent);
+}
+
+@media (min-width: 768px) {
+  .header {
+    padding: 16px 24px;
+  }
+
+  .main {
+    padding: 32px 24px 64px;
+  }
+}
+
+@media (max-width: 640px) {
+  .userMeta {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .brand {
+    display: none;
+  }
+}

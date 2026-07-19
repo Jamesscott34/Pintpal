@@ -224,26 +224,38 @@ Advanced web administration dashboard and operational tooling, moderation queue,
 **Phase 7: Mini-Games**
 Two bartender skill mini-games with their own scoreboards, Pour the Perfect Pint and Serving Rush. See the Mini-Games section below for detail.
 
-## Mini-Games
+## Mini-Games (implemented)
 
-Two single-player skill games, both framed as bartender challenges rather than drinking challenges. Neither game simulates or rewards actual alcohol consumption, scoring is based on pouring and serving accuracy only. This follows the same responsible design principle as the rest of the platform: no leaderboard, achievement or piece of copy in either game may reward speed of drinking or volume consumed.
+Both games are bartender skill challenges (pour / serve accuracy only). Scores never reward drinking volume or speed. Public boards are opt-in and separate from beer ratings.
 
 ### Pour the Perfect Pint
 
-A single-player pouring game built around a shared fill-and-timing mechanic: the glass fills over a liquid layer and, for beer-style pours, a separate head/foam layer, and the player controls when to stop. Accuracy is scored against a target liquid level and head size.
-
-- **Practice mode:** starts easy, a wide tolerance window and a slow pour speed, so the mechanic can be learned before it is tested. No timer.
-- **Progression:** each successful level tightens the tolerance window and/or increases pour speed.
-- **Timed mode:** a fixed time limit (for example 60 seconds), scoring as many accurate pours as possible before time runs out.
-- **Scoreboard:** a personal best per user, filterable by timed or practice mode, shown on a public opt-in leaderboard kept entirely separate from the ratings and contribution leaderboards elsewhere in the app.
+- **Web:** `/games/pour` — practice, timed (30/60/90/120s), scoreboard  
+- **Android:** Pour hub from Public → Pour the Perfect Pint  
+- **Firestore:** `pour_game_scores` + profile bests on `users/{uid}`
 
 ### Serving Rush
 
-A multi-tap, multi-order game built on the same pouring mechanic. Drink orders (Guinness, Bulmers, and other drinks drawn from the platform's own product and category data) appear in a queue. The player must select the correct tap for the prompted drink, then complete the pour correctly, before that order's time limit expires. Picking the wrong tap or missing the timer counts as a miss and reduces the score.
+- **Web:** `/games/serving` — queue of drink orders; pick the correct tap, then pour before the order timer; wrong tap / timeout = miss (−10)  
+- **Android:** Serving Rush from Public  
+- **Firestore:** `serving_game_scores` + `servingGameBestScore` on the user profile  
 
-- **Scoreboard:** its own leaderboard, following the same pattern as Pour the Perfect Pint, kept separate so the two games' scores never mix.
+### Public community hub
 
-Both games sit inside the existing PintPal app and share its accounts, Firebase backend and design system, rather than existing as a standalone product.
+Signed-in members use **Public** for games, chats (placeholder), beer ratings (placeholder), and scoreboards. A **top scoreboard** on Public shows the current best pint (practice accuracy) and Serving Rush lead with the player’s display name. **Private** is profile-only. **Admin** (`canViewAdmin`) can list all users and open the same community surfaces.
+
+### App shell routes (web)
+
+| Route | Purpose |
+|-------|---------|
+| `/public` | Community hub + top scoreboard |
+| `/private` | Own profile |
+| `/admin` | Admin dashboard (all users) |
+| `/games/pour` | Pour the Perfect Pint |
+| `/games/serving` | Serving Rush |
+| `/ratings` | Beer ratings placeholder |
+
+Responsive layout targets phone, tablet, and laptop browsers (flexible grids, sticky nav, 44px+ tap targets).
 
 ## Minimum Viable Product
 

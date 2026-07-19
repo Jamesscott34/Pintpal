@@ -13,5 +13,6 @@ export {
   subscribeToAuth,
   loadUserDocument,
   loadAndEnforceLogin,
+  userDocumentRef,
   LoginDeniedError,
 } from "./authRepository";

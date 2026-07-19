@@ -1,9 +1,12 @@
 # OS / IDE
 .DS_Store
 Thumbs.db
+Desktop.ini
 .idea/
 *.iml
 .vscode/
+*.swp
+*~
 
 # Android
 pintpal_app/.gradle/
@@ -12,6 +15,13 @@ pintpal_app/local.properties
 pintpal_app/captures/
 pintpal_app/.externalNativeBuild/
 pintpal_app/.cxx/
+pintpal_app/app/release/
+pintpal_app/**/*.apk
+pintpal_app/**/*.aab
+pintpal_app/**/*.ap_
+pintpal_app/**/mapping.txt
+# Accidental shell redirect artifacts
+pintpal_app/-
 
 # Web / Node
 Pintpal_web/node_modules/
@@ -19,16 +29,29 @@ Pintpal_web/.next/
 Pintpal_web/out/
 Pintpal_web/coverage/
 Pintpal_web/*.tsbuildinfo
+Pintpal_web/.turbo/
 
 # Firebase
 .firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
 
 # Env / secrets (keep example files only)
 .env
 .env.*
 !.env.example
 **/.env.local
+**/google-services.json.bak
+**/GoogleService-Info.plist.bak
 
-# Logs
+# Logs / temp
 *.log
 npm-debug.log*
+yarn-error.log*
+tmp/
+temp/
+*.tmp
+
+# Generated auth exports / local dumps
+*-auth-users.json

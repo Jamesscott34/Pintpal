@@ -4,7 +4,7 @@
  * Purpose: Client hook for Firebase auth session + Firestore users document flags.
  * Connects to: features/auth/data/authRepository. Used by LoginForm, RegisterForm,
  *              AccountPanel, and gated pages.
- * Notes: Enforces canLogin after auth. Exposes canViewAdmin for admin UI gating.
+ * Notes: Enforces canLogin after auth. Exposes canViewAdmin and subscription (paid/free).
  */
 
 "use client";
@@ -21,9 +21,14 @@ import {
   subscribeToAuth,
 } from "@/features/auth/data";
 import type { UserDocument } from "@/features/auth/types";
+import { mapAuthError } from "@/utilities/authErrors";
 import {
   canLogin as checkCanLogin,
+  canUploadPhoto as checkCanUploadPhoto,
   canViewAdmin as checkCanViewAdmin,
+  isSubscriptionPaid as checkIsSubscriptionPaid,
+  remainingPhotoUploadsToday,
+  subscriptionLabel,
 } from "@/utilities/permissions";
 
 type UseAuthResult = {
@@ -33,9 +38,14 @@ type UseAuthResult = {
   errorMessage: string | null;
   canLogin: boolean;
   canViewAdmin: boolean;
-  register: (email: string, password: string, name: string) => Promise<void>;
-  signIn: (email: string, password: string) => Promise<void>;
-  signInGoogle: () => Promise<void>;
+  /** Effective paid status (admin always paid). */
+  isSubscriptionPaid: boolean;
+  subscription: "paid" | "free";
+  canUploadPhoto: boolean;
+  remainingPhotoUploadsToday: number;
+  register: (email: string, password: string, name: string) => Promise<UserDocument>;
+  signIn: (email: string, password: string) => Promise<UserDocument>;
+  signInGoogle: () => Promise<UserDocument>;
   signOutUser: () => Promise<void>;
   clearError: () => void;
 };
@@ -55,14 +65,14 @@ export function useAuth(): UseAuthResult {
         return;
       }
       try {
+        // Always load Firestore users/{user.uid} for the authenticated Auth UID.
         const document = await loadAndEnforceLogin(user);
         setUserDocument(document);
+        setFirebaseUser(user);
       } catch (error) {
         setUserDocument(null);
         setFirebaseUser(null);
-        setErrorMessage(
-          error instanceof Error ? error.message : "Unable to load account permissions.",
-        );
+        setErrorMessage(mapAuthError(error));
       } finally {
         setIsLoading(false);
       }
@@ -76,8 +86,9 @@ export function useAuth(): UseAuthResult {
     try {
       const document = await registerWithEmail(email, password, name);
       setUserDocument(document);
+      return document;
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Registration failed.");
+      setErrorMessage(mapAuthError(error));
       throw error;
     } finally {
       setIsLoading(false);
@@ -90,8 +101,9 @@ export function useAuth(): UseAuthResult {
     try {
       const document = await signInWithEmail(email, password);
       setUserDocument(document);
+      return document;
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Sign-in failed.");
+      setErrorMessage(mapAuthError(error));
       throw error;
     } finally {
       setIsLoading(false);
@@ -104,8 +116,9 @@ export function useAuth(): UseAuthResult {
     try {
       const document = await signInWithGoogle();
       setUserDocument(document);
+      return document;
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Google sign-in failed.");
+      setErrorMessage(mapAuthError(error));
       throw error;
     } finally {
       setIsLoading(false);
@@ -118,6 +131,8 @@ export function useAuth(): UseAuthResult {
     setFirebaseUser(null);
   }, []);
 
+  const remaining = remainingPhotoUploadsToday(userDocument);
+
   return {
     firebaseUser,
     userDocument,
@@ -125,6 +140,10 @@ export function useAuth(): UseAuthResult {
     errorMessage,
     canLogin: checkCanLogin(userDocument),
     canViewAdmin: checkCanViewAdmin(userDocument),
+    isSubscriptionPaid: checkIsSubscriptionPaid(userDocument),
+    subscription: subscriptionLabel(userDocument),
+    canUploadPhoto: checkCanUploadPhoto(userDocument),
+    remainingPhotoUploadsToday: Number.isFinite(remaining) ? remaining : Number.POSITIVE_INFINITY,
     register,
     signIn,
     signInGoogle,

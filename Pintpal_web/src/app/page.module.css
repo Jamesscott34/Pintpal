@@ -49,6 +49,13 @@
   color: var(--accent);
 }
 
+.logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
 .intro h1 {
   font-size: 40px;
   font-weight: 600;

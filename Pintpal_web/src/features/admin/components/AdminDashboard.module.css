@@ -1,0 +1,119 @@
+/**
+ * AdminDashboard.module.css
+ *
+ * Purpose: Styles for the admin dashboard.
+ * Connects to: AdminDashboard.tsx.
+ */
+
+.hub {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c4a35a;
+  margin: 0;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  margin: 0;
+  color: #f2efe6;
+}
+
+.lead,
+.meta {
+  max-width: 40rem;
+  color: #b7c4ba;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.error {
+  color: #c45a5a;
+  margin: 0;
+}
+
+.section {
+  margin-top: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #2a3d32;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  margin: 0 0 12px;
+  color: #f2efe6;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 0;
+  text-decoration: none;
+  border-bottom: 1px solid #2a3d32;
+  color: inherit;
+}
+
+.itemTitle {
+  font-size: 17px;
+  font-weight: 600;
+  color: #f2efe6;
+}
+
+.itemMeta {
+  font-size: 14px;
+  color: #b7c4ba;
+}
+
+.link {
+  color: #c4a35a;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid #2a3d32;
+  color: #f2efe6;
+  vertical-align: top;
+}
+
+.table th {
+  color: #b7c4ba;
+  font-weight: 600;
+}
+
+.uid {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 12px;
+  word-break: break-all;
+  color: #b7c4ba;
+}

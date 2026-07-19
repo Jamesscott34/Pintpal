@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  pour_game_scoreboard_activity.xml
+  Purpose: Public pour scoreboard (practice / timed), opt-in.
+  Connects to: PourScoreboardActivity.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/games_common_bg"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pour_game_scoreboard_title"
+        android:textColor="@color/games_common_text"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="@string/pour_game_scoreboard_sub"
+        android:textColor="@color/games_common_muted"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/pour_game_profile_best"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/games_common_accent"
+        android:textSize="14sp" />
+
+    <CheckBox
+        android:id="@+id/pour_game_opt_in"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/pour_game_opt_in"
+        android:textColor="@color/games_common_text" />
+
+    <RadioGroup
+        android:id="@+id/pour_game_board_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/pour_game_board_practice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/pour_game_filter_practice"
+            android:textColor="@color/games_common_text" />
+
+        <RadioButton
+            android:id="@+id/pour_game_board_timed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pour_game_filter_timed"
+            android:textColor="@color/games_common_text" />
+    </RadioGroup>
+
+    <Spinner
+        android:id="@+id/pour_game_board_duration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/pour_game_board_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/games_common_muted"
+        android:textSize="13sp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/pour_game_board_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="6dp"
+            android:textColor="@color/games_common_text"
+            android:textSize="14sp" />
+    </ScrollView>
+</LinearLayout>

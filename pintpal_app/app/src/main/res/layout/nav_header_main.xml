@@ -1,30 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  nav_header_main.xml
+  Purpose: Navigation drawer header with PintPal branding and logo.
+  Connects to: MainActivity drawer layouts.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="176dp"
-    android:background="@drawable/side_nav_bar"
+    android:layout_height="196dp"
+    android:background="@color/auth_launcher_bg"
     android:gravity="bottom"
     android:orientation="vertical"
     android:padding="16dp">
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:contentDescription="@string/nav_header_desc"
-        android:paddingTop="8dp"
-        app:srcCompat="@mipmap/ic_launcher_round" />
+        android:paddingTop="4dp"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/pintpal_icon" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
-        android:text="@string/nav_header_title" />
+        android:text="@string/nav_header_title"
+        android:textColor="@color/games_common_text"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/nav_header_subtitle" />
+        android:text="@string/nav_header_subtitle"
+        android:textColor="@color/games_common_muted" />
 </LinearLayout>

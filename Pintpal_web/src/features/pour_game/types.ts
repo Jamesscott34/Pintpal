@@ -43,4 +43,7 @@ export interface PourGameRoundResult {
   };
 }
 
+/** Allowed timed-run lengths (seconds). */
+export type TimedDurationOption = 30 | 60 | 90 | 120;
+
 export type { PourConfig, PourScore };

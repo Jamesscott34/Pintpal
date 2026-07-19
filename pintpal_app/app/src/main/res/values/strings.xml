@@ -2,15 +2,16 @@
     <string name="app_name">Pintpal</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_header_title">PintPal</string>
+    <string name="nav_header_subtitle">Drinks discovery</string>
+    <string name="nav_header_desc">PintPal app logo</string>
     <string name="action_settings">Settings</string>
 
     <string name="menu_transform">Transform</string>
     <string name="menu_reflow">Reflow</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="menu_settings">Settings</string>
+    <string name="menu_pour_game">Pour the Perfect Pint</string>
 
     <string name="lorem_ipsum_title">Lorem Ipsum"</string>
     <string name="lorem_ipsum">Lorem Ipsum is simply placeholder text of the printing and
@@ -41,6 +42,47 @@
     <string name="auth_google_failed">Google Sign-In failed (code %1$s)</string>
     <!-- Paste Web client ID from Firebase Console → Project settings → Your apps / Google Cloud OAuth (type Web). -->
     <string name="auth_google_web_client_id"></string>
+    <string name="auth_subscription_paid">Paid · unlimited photos</string>
+    <string name="auth_subscription_free">Free · %1$d of 2 photos left today</string>
+    <string name="nav_header_user_line">%1$s · %2$s</string>
+    <string name="app_shell_public_eyebrow">Public</string>
+    <string name="app_shell_public_title">Games &amp; chats</string>
+    <string name="app_shell_public_community_title">Community</string>
+    <string name="app_shell_public_lead">Games, chats, beer ratings, and the pour scoreboard. Your profile is under Private.</string>
+    <string name="app_shell_private_eyebrow">Private</string>
+    <string name="app_shell_private_title">Your profile</string>
+    <string name="app_shell_chats_placeholder">Chats coming soon.</string>
+    <string name="app_shell_admin_public_note">Admin: you can open every public game and chat.</string>
+    <string name="app_shell_admin_details_title">Admin details</string>
+    <string name="app_shell_beer_ratings">Beer ratings</string>
+    <string name="app_shell_ratings_coming_soon">Beer ratings coming soon.</string>
+    <string name="menu_public">Public</string>
+    <string name="menu_private">Private</string>
+    <string name="menu_admin">Admin</string>
+    <string name="admin_eyebrow">Admin</string>
+    <string name="admin_dashboard_title">Admin dashboard</string>
+    <string name="admin_dashboard_lead">Manage users and open community areas. Members use Public for games, chats, ratings, and the scoreboard.</string>
+    <string name="admin_all_users">All users</string>
+    <string name="admin_loading_users">Loading users…</string>
+    <string name="admin_no_users">No user documents found.</string>
+    <string name="admin_users_failed">Could not load users.</string>
+    <string name="admin_access_denied">Admin access required.</string>
+
+    <string name="serving_game_title">Serving Rush</string>
+    <string name="serving_game_lead">Match the order to the right tap, then pour accurately before time runs out.</string>
+    <string name="serving_start">Start rush</string>
+    <string name="serving_play_again">Play again</string>
+    <string name="serving_pick_tap">Select the correct tap for this order.</string>
+    <string name="serving_pour_now">Correct tap — hold to pour, release to score.</string>
+    <string name="serving_order_fmt">Order: %1$s</string>
+    <string name="serving_stats_fmt">Score %1$d · Order %2$d/%3$d · Misses %4$d · %5$ds</string>
+    <string name="serving_wrong_tap">Wrong tap</string>
+    <string name="serving_timeout">Order timed out</string>
+    <string name="serving_idle_hint">Start a rush — pick the right tap, then pour.</string>
+    <string name="serving_saved_public">Personal best saved to the Serving Rush scoreboard.</string>
+    <string name="serving_saved_best">Personal best saved to your profile.</string>
+    <string name="serving_saved">Run saved. Score did not beat your personal best.</string>
+    <string name="serving_save_failed">Could not save Serving Rush score.</string>
 
     <!-- games_common — bartender pour skill (not drinking) -->
     <string name="games_common_brand">PintPal</string>

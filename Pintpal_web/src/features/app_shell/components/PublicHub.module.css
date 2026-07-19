@@ -1,0 +1,91 @@
+/**
+ * PublicHub.module.css
+ *
+ * Purpose: Styles for the Public community hub (responsive).
+ */
+
+.hub {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c4a35a;
+  margin: 0;
+}
+
+.title {
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  margin: 0;
+  color: #f2efe6;
+}
+
+.lead {
+  max-width: 36rem;
+  color: #b7c4ba;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.section {
+  margin-top: 4px;
+  padding-top: 20px;
+  border-top: 1px solid #2a3d32;
+}
+
+.sectionTitle {
+  font-size: 1.1rem;
+  margin: 0 0 12px;
+  color: #f2efe6;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 0;
+  text-decoration: none;
+  border-bottom: 1px solid #2a3d32;
+  color: inherit;
+  min-height: 48px;
+}
+
+.itemTitle {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #f2efe6;
+}
+
+.itemMeta {
+  font-size: 0.9rem;
+  color: #b7c4ba;
+}
+
+.placeholder {
+  color: #b7c4ba;
+  margin: 0;
+  line-height: 1.5;
+}
+
+@media (min-width: 900px) {
+  .hub {
+    gap: 24px;
+  }
+}

@@ -1,0 +1,140 @@
+rules_version = '2';
+
+// Firestore security rules for PintPal.
+// Style: helper functions + clear sections (same pattern as larger admin apps).
+// users/{uid} document ID must equal the authenticated Auth UID.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ============================================================
+    // AUTH / USER HELPERS
+    // ============================================================
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function currentUserPath() {
+      return /databases/$(database)/documents/users/$(request.auth.uid);
+    }
+
+    function currentUserExists() {
+      return signedIn() && exists(currentUserPath());
+    }
+
+    function currentUser() {
+      return currentUserExists() ? get(currentUserPath()).data : null;
+    }
+
+    function userRoleLower() {
+      return !currentUserExists()
+        ? ''
+        : (currentUser().role is string ? currentUser().role.lower() : '');
+    }
+
+    // Admin: canViewAdmin flag or role == admin (set only via console / Admin SDK).
+    function isAdmin() {
+      return signedIn() && currentUserExists() && (
+        currentUser().canViewAdmin == true
+        || userRoleLower() == 'admin'
+      );
+    }
+
+    // Subscription: true == paid, false == free.
+    // Admins are always treated as paid. Regular users are free unless
+    // subscriptionPaid was set to true by an admin / backend.
+    function isSubscriptionPaid() {
+      return isAdmin()
+        || (currentUserExists() && currentUser().subscriptionPaid == true);
+    }
+
+    function freePhotoDailyLimit() {
+      return 2;
+    }
+
+    // ============================================================
+    // USERS
+    // ============================================================
+
+    match /users/{userId} {
+      // Owner and admins can read.
+      allow read: if isOwner(userId) || isAdmin();
+
+      // First-time registration: own doc only; cannot self-grant admin or paid.
+      allow create: if isOwner(userId)
+        && request.resource.data.email is string
+        && request.resource.data.name is string
+        && request.resource.data.role == 'user'
+        && request.resource.data.canLogin == true
+        && request.resource.data.canViewAdmin == false
+        && request.resource.data.subscriptionPaid == false
+        && (
+          !('photoUploadsToday' in request.resource.data)
+          || request.resource.data.photoUploadsToday == 0
+        );
+
+      // Owners may update profile fields but cannot escalate privileged flags.
+      // Admins may update any user (including subscriptionPaid).
+      allow update: if isAdmin()
+        || (
+          isOwner(userId)
+          && request.resource.data.role == resource.data.role
+          && request.resource.data.canViewAdmin == resource.data.canViewAdmin
+          && request.resource.data.get('subscriptionPaid', false)
+            == resource.data.get('subscriptionPaid', false)
+          && request.resource.data.canLogin == resource.data.canLogin
+        );
+
+      allow delete: if isAdmin();
+    }
+
+    // ============================================================
+    // POUR THE PERFECT PINT SCORES
+    // Separate from ratings / contribution leaderboards.
+    // ============================================================
+
+    match /pour_game_scores/{scoreId} {
+      allow read: if resource.data.isPublic == true
+        || (signedIn() && resource.data.userId == request.auth.uid)
+        || isAdmin();
+
+      allow create, update: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.mode in ['practice', 'timed']
+        && request.resource.data.score is number;
+
+      allow delete: if signedIn()
+        && resource.data.userId == request.auth.uid;
+    }
+
+    // ============================================================
+    // SERVING RUSH SCORES
+    // Separate from pour scores and ratings boards.
+    // ============================================================
+
+    match /serving_game_scores/{scoreId} {
+      allow read: if resource.data.isPublic == true
+        || (signedIn() && resource.data.userId == request.auth.uid)
+        || isAdmin();
+
+      allow create, update: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.score is number;
+
+      allow delete: if signedIn()
+        && resource.data.userId == request.auth.uid;
+    }
+
+    // ============================================================
+    // DEFAULT DENY
+    // ============================================================
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

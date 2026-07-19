@@ -3,16 +3,20 @@
  *
  * Purpose: Shared styles for login, register, and account panels.
  * Connects to: LoginForm, RegisterForm, AccountPanel components.
- * Notes: Plain CSS module for crawlable/static styling; matches home page palette.
+ * Notes: Explicit light + dark palettes so input text stays readable in both modes.
  */
 
 .panel {
+  /* Dark mode defaults (also used when system prefers dark) */
   --bg: #0f1a14;
   --surface: #16241c;
   --text: #f2efe6;
   --muted: #b7c4ba;
   --accent: #c4a35a;
-  --danger: #e57373;
+  --danger: #c45a5a;
+  --input-bg: #0f1a14;
+  --input-border: #3d5648;
+  --input-text: #f2efe6;
 
   min-height: 100vh;
   display: flex;
@@ -24,17 +28,54 @@
     var(--bg);
   color: var(--text);
   font-family: var(--font-geist-sans), Georgia, serif;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: light) {
+  .panel {
+    --bg: #eef3ef;
+    --surface: #ffffff;
+    --text: #122018;
+    --muted: #4a5c52;
+    --accent: #8a6d2f;
+    --danger: #b42318;
+    --input-bg: #ffffff;
+    --input-border: #9aada2;
+    --input-text: #122018;
+
+    background:
+      radial-gradient(ellipse at top, #d5e0d8 0%, transparent 55%),
+      var(--bg);
+    color-scheme: light;
+  }
 }
 
 .card {
   width: 100%;
   max-width: 420px;
   background: var(--surface);
-  padding: 40px 32px;
+  padding: clamp(24px, 5vw, 40px) clamp(18px, 4vw, 32px);
   border-bottom: 4px solid var(--accent);
   display: flex;
   flex-direction: column;
   gap: 16px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+}
+
+.embeddedCard {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  object-fit: cover;
+  align-self: flex-start;
 }
 
 .brand {
@@ -49,6 +90,7 @@
   font-size: 28px;
   font-weight: 600;
   letter-spacing: -0.02em;
+  color: var(--text);
 }
 
 .label {
@@ -61,26 +103,55 @@
 
 .input {
   padding: 12px 14px;
-  border: 1px solid #2f4338;
-  background: #0f1a14;
-  color: var(--text);
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  background: var(--input-bg);
+  color: var(--input-text);
+  -webkit-text-fill-color: var(--input-text);
+  caret-color: var(--input-text);
   font-size: 16px;
+  color-scheme: inherit;
+}
+
+.input::placeholder {
+  color: var(--muted);
+  opacity: 0.85;
+}
+
+.input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Stop browser autofill from wiping contrast in either mode */
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--input-text);
+  caret-color: var(--input-text);
+  box-shadow: 0 0 0 1000px var(--input-bg) inset;
+  transition: background-color 99999s ease-out;
 }
 
 .button {
   margin-top: 8px;
   padding: 12px 16px;
   border: none;
+  border-radius: 4px;
   background: var(--accent);
   color: #0f1a14;
   font-weight: 600;
   cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  display: inline-block;
 }
 
 .buttonSecondary {
   margin-top: 0;
   padding: 12px 16px;
-  border: 1px solid #2f4338;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
   background: transparent;
   color: var(--text);
   font-weight: 600;
@@ -102,4 +173,9 @@
   color: var(--muted);
   font-size: 14px;
   line-height: 1.5;
+}
+
+.meta code {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.9em;
 }

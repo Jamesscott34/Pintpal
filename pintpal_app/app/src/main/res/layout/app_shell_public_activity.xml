@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  app_shell_public_activity.xml
+  Purpose: Public section — games, chats, ratings, scoreboard.
+  Connects to: PublicHubActivity.
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/games_common_bg"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_shell_public_eyebrow"
+            android:textAllCaps="true"
+            android:textColor="@color/games_common_accent"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/app_shell_public_community_title"
+            android:textColor="@color/games_common_text"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/app_shell_public_lead"
+            android:textColor="@color/games_common_muted" />
+
+        <Button
+            android:id="@+id/app_shell_open_pour"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/menu_pour_game" />
+
+        <Button
+            android:id="@+id/app_shell_open_serving"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/serving_game_title" />
+
+        <Button
+            android:id="@+id/app_shell_open_scoreboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/pour_game_scoreboard_title" />
+
+        <Button
+            android:id="@+id/app_shell_open_ratings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/app_shell_beer_ratings" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/app_shell_chats_placeholder"
+            android:textColor="@color/games_common_muted" />
+
+        <Button
+            android:id="@+id/app_shell_open_private"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/app_shell_private_title" />
+    </LinearLayout>
+</ScrollView>

@@ -3,27 +3,25 @@
  *
  * Purpose: Root App Router layout for PintPal web (HTML document shell, metadata, global CSS).
  * Connects to: All routes under src/app. Styles via globals.css (plain CSS, not Tailwind).
- * Notes: Metadata is set for crawlability. Keep this file thin; feature logic stays in features/*.
+ * Notes: Local font stack (no Google Fonts fetch) so CI / offline builds stay reliable.
+ *        Icons point at the PintPal logo so the browser tab never falls back to Vercel.
  */
 
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "PintPal — Drinks discovery, ratings & recommendations",
+  title: "PintPal — Drinks discovery",
   description:
     "Discover, rate, and share drinks across beer, cider, wine, spirits, and more.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/pintpal-icon.png", type: "image/png", sizes: "512x512" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [{ url: "/apple-icon.png", type: "image/png", sizes: "180x180" }],
+  },
 };
 
 export default function RootLayout({
@@ -32,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en">
       <body>{children}</body>
     </html>
   );

@@ -203,6 +203,18 @@ export function useTwoPartPour(
   }, [stopLoop]);
 
   useEffect(() => {
+    difficultyRef.current = difficulty;
+  }, [difficulty]);
+
+  useEffect(() => {
+    if (inputLocked && pouringRef.current) {
+      pouringRef.current = false;
+      stopLoop();
+      setState((prev) => ({ ...prev, isPouring: false }));
+    }
+  }, [inputLocked, stopLoop]);
+
+  useEffect(() => {
     if (phase === "settle") {
       ensureLoop();
     }

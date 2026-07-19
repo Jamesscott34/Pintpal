@@ -37,10 +37,34 @@
             android:theme="@style/Theme.Pintpal.NoActionBar"
             tools:targetApi="24" />
         <activity
+            android:name=".features.admin.ui.AdminDashboardActivity"
+            android:exported="false"
+            android:label="@string/admin_dashboard_title"
+            android:theme="@style/Theme.Pintpal"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".features.app_shell.ui.PublicHubActivity"
+            android:exported="false"
+            android:label="@string/app_shell_public_title"
+            android:theme="@style/Theme.Pintpal"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".features.app_shell.ui.PrivateProfileActivity"
+            android:exported="false"
+            android:label="@string/app_shell_private_title"
+            android:theme="@style/Theme.Pintpal"
+            android:parentActivityName=".MainActivity" />
+        <activity
             android:name=".features.games_common.ui.GamesCommonDemoActivity"
             android:exported="false"
             android:label="@string/games_common_demo_title"
             android:theme="@style/Theme.Pintpal" />
+        <activity
+            android:name=".features.serving_game.ui.ServingRushActivity"
+            android:exported="false"
+            android:label="@string/serving_game_title"
+            android:theme="@style/Theme.Pintpal"
+            android:parentActivityName=".features.app_shell.ui.PublicHubActivity" />
         <activity
             android:name=".features.pour_game.ui.PourGameHubActivity"
             android:exported="false"

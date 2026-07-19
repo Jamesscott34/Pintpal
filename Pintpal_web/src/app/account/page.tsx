@@ -1,13 +1,19 @@
 /**
  * page.tsx (account)
  *
- * Purpose: Thin App Router page for the signed-in account panel.
- * Connects to: features/auth/components/AccountPanel.
- * Notes: Client-side gate redirects to /login when unauthenticated.
+ * Purpose: Legacy /account route — redirects into Private profile section.
+ * Connects to: /private (preferred).
  */
 
-import { AccountPanel } from "@/features/auth/components/AccountPanel";
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function AccountPage() {
-  return <AccountPanel />;
+  const router = useRouter();
+  useEffect(() => {
+    router.replace("/private");
+  }, [router]);
+  return null;
 }

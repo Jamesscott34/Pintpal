@@ -1,8 +1,19 @@
 /**
  * data/index.ts
  *
- * Purpose: Placeholder data layer for pour_game (scoreboard arrives in Stage 4).
- * Connects to: Future Firestore pour score collection — not used in Stage 2.
+ * Purpose: Public exports for pour_game data layer (Firestore scores).
+ * Connects to: pourGameScoreRepository; Practice/Timed/Scoreboard screens.
  */
 
-export {};
+export {
+  submitPourScore,
+  setPourScoreboardOptIn,
+  loadPublicPourScoreboard,
+  loadPourProfile,
+} from "./pourGameScoreRepository";
+export type {
+  PourScoreMode,
+  PourScoreSubmission,
+  PourScoreSubmitResult,
+  PourScoreboardEntry,
+} from "./pourGameScoreRepository";

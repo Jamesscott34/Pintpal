@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  values-night/colors.xml
+  Purpose: Dark-mode auth colours so login inputs stay readable at night.
+  Connects to: auth_login_activity / auth_register_activity layouts.
+-->
+<resources>
+    <color name="auth_bg">#FF0F1A14</color>
+    <color name="auth_surface">#FF16241C</color>
+    <color name="auth_text">#FFF2EFE6</color>
+    <color name="auth_muted">#FFB7C4BA</color>
+    <color name="auth_accent">#FFC4A35A</color>
+    <color name="auth_input_bg">#FF0F1A14</color>
+    <color name="auth_input_stroke">#FF3D5648</color>
+    <color name="auth_on_accent">#FF0F1A14</color>
+    <color name="auth_launcher_bg">#FF0F1A14</color>
+</resources>

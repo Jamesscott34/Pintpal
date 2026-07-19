@@ -53,6 +53,13 @@
   font-size: 0.95rem;
 }
 
+.levelBadge {
+  margin: 0.75rem 0 0;
+  font-size: 0.85rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
 .phase {
   margin: 0.5rem 0 0;
   font-weight: 600;

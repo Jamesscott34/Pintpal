@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  pour_game_hub_activity.xml
+  Purpose: Mode picker for Pour the Perfect Pint.
+  Connects to: PourGameHubActivity.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/games_common_bg"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:letterSpacing="0.12"
+        android:text="@string/pour_game_brand"
+        android:textAllCaps="true"
+        android:textColor="@color/games_common_accent"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/pour_game_title"
+        android:textColor="@color/games_common_text"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:text="@string/games_common_skill_note"
+        android:textColor="@color/games_common_muted"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/pour_game_hub_practice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="@string/pour_game_hub_practice" />
+
+    <Button
+        android:id="@+id/pour_game_hub_timed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/pour_game_hub_timed" />
+
+    <Button
+        android:id="@+id/pour_game_hub_scoreboard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/pour_game_hub_scoreboard" />
+</LinearLayout>

@@ -8,10 +8,16 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- auth — Stage 1 palette -->
-    <color name="auth_bg">#FF0F1A14</color>
-    <color name="auth_text">#FFF2EFE6</color>
-    <color name="auth_accent">#FFC4A35A</color>
+    <!-- auth — Stage 1 palette (light-mode defaults; night overrides in values-night) -->
+    <color name="auth_bg">#FFEEF3EF</color>
+    <color name="auth_surface">#FFFFFFFF</color>
+    <color name="auth_text">#FF122018</color>
+    <color name="auth_muted">#FF4A5C52</color>
+    <color name="auth_accent">#FF8A6D2F</color>
+    <color name="auth_input_bg">#FFFFFFFF</color>
+    <color name="auth_input_stroke">#FF9AADA2</color>
+    <color name="auth_on_accent">#FF0F1A14</color>
+    <color name="auth_launcher_bg">#FF0F1A14</color>
 
     <!-- games_common pour mechanic -->
     <color name="games_common_bg">#FF0F1A14</color>
