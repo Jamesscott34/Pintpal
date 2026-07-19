@@ -1,0 +1,75 @@
+/**
+ * page.module.css
+ *
+ * Purpose: Styles for the server-rendered PintPal home page.
+ * Connects to: src/app/page.tsx only.
+ * Notes: Plain CSS module so the built site ships real HTML + CSS for crawlers.
+ */
+
+.page {
+  --background: #0f1a14;
+  --surface: #16241c;
+  --text-primary: #f2efe6;
+  --text-secondary: #b7c4ba;
+  --accent: #c4a35a;
+
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-geist-sans), Georgia, serif;
+  background:
+    radial-gradient(ellipse at top, #24362c 0%, transparent 55%),
+    var(--background);
+  min-height: 100vh;
+}
+
+.main {
+  display: flex;
+  width: 100%;
+  max-width: 720px;
+  flex-direction: column;
+  background-color: var(--surface);
+  padding: 96px 48px;
+  border-bottom: 4px solid var(--accent);
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.brand {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.intro h1 {
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+
+.intro p:not(.brand) {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 36rem;
+}
+
+@media (max-width: 600px) {
+  .main {
+    padding: 48px 24px;
+  }
+
+  .intro h1 {
+    font-size: 32px;
+  }
+}

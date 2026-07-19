@@ -1,0 +1,30 @@
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+*.iml
+.vscode/
+
+# Android
+pintpal_app/.gradle/
+pintpal_app/**/build/
+pintpal_app/local.properties
+pintpal_app/captures/
+pintpal_app/.externalNativeBuild/
+pintpal_app/.cxx/
+
+# Web / Node
+Pintpal_web/node_modules/
+Pintpal_web/.next/
+Pintpal_web/out/
+Pintpal_web/coverage/
+Pintpal_web/*.tsbuildinfo
+# Env / secrets (keep example files only)
+.env
+.env.*
+!.env.example
+**/.env.local
+
+# Logs
+*.log
+npm-debug.log*

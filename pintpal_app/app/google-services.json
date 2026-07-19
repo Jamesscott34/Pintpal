@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "681785760069",
+    "project_id": "pintpal-71452",
+    "storage_bucket": "pintpal-71452.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:681785760069:android:bbf5d29dc788820791062c",
+        "android_client_info": {
+          "package_name": "com.jdscott.pintpal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBv1_K14N3TA1dbSp-e-hWoFezJ5y-PQMo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
